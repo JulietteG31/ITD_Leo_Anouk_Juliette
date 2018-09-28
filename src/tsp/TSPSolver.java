@@ -1,7 +1,6 @@
 package tsp;
 
 /**
- * Salut les noobs comment ca va ? hey
  * This class is the place where you should enter your code and from which you can create your own objects.
  * 
  * The method you must implement is solve(). This method is called by the programmer after loading the data.
@@ -78,7 +77,6 @@ public class TSPSolver {
 		{
 			// TODO
 			// Code a loop base on time here
-			// TestANOUK2 JulietteTest
 			spentTime = System.currentTimeMillis() - startTime;
 		}while(spentTime < (m_timeLimit * 1000 - 100) );
 		
