@@ -39,7 +39,25 @@ public class Fourmi {
 		}
 		return prochainesVillesPossibles;
 	}
-	
+	public int NextStep() {
+		
+		// boucle qui retourne somme 
+		//ponderation de chacune des prochainesVillesPossibles poids=(phero^alpha*(1/d)^Beta)/ somme
+		for (int ville : prochainesVillesPossibles()) {
+			if(Math.random()<= ville.poids) {
+				int villeSuivante=ville;
+			}
+			else {
+				prochainesVillesPossibles().remove(0);
+				for (int villesuiv: prochainesVillesPossibles()) {
+					villesuiv.poids=(villesuiv.poids)/(1.0-ville.poids);
+					
+				}
+			}
+		}
+			return villeSuivante;
+		}
+
 	
 
 }
