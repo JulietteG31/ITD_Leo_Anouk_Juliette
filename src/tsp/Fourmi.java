@@ -5,18 +5,18 @@ import java.util.List;
 
 public class Fourmi {
 	
-	private ArrayList<Integer> noeudsVisites;
-	private ArrayList<Integer> noeudsRestants;
-	private int noeudActuel;
+	private ArrayList<Integer> villesVisitees;
+	private ArrayList<Integer> villesRestantes;
+	private int villeActuelle;
 	private int etat;
 	private int distance;
 	
 	
-	public Fourmi(ArrayList<Integer> noeudsVisites, ArrayList<Integer> noeudsRestants, int noeudActuel, int etat,
+	public Fourmi(ArrayList<Integer> villesVisitees, ArrayList<Integer> villesRestantes, int villeActuelle, int etat,
 			int distance) {
-		this.noeudsVisites = noeudsVisites;
-		this.noeudsRestants = noeudsRestants;
-		this.noeudActuel = noeudActuel;
+		this.villesVisitees = villesVisitees;
+		this.villesRestantes = villesRestantes;
+		this.villeActuelle = villeActuelle;
 		this.etat = etat;
 		this.distance = distance;
 	}
@@ -24,8 +24,16 @@ public class Fourmi {
 	public Fourmi() {
 		this(new ArrayList<Integer>(),new ArrayList<Integer>(),0,0,0 );
 		for(int i=0;i<442;i++) {
-			this.noeudsRestants.add(i);
+			this.villesRestantes.add(i);
 		}
+	}
+	
+	public ArrayList<Integer> prochainesvillesPossibles() {
+		ArrayList<Integer> prochainsvillesPossibles = new ArrayList<Integer>();
+		for(int ville : this.villesRestantes) {
+						
+		}
+		return prochainsvillesPossibles;
 	}
 	
 	
