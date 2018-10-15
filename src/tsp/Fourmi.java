@@ -32,17 +32,15 @@ public class Fourmi {
 	}
 	
 	public ArrayList<Integer> prochainesVillesPossibles() {
-		int critere;
-		//long[][] distances = Colonie.getInstance().getDistance();
+		int critere=100;
+		long[][] distances = this.colonie.getInstance().getDistances();
 		ArrayList<Integer> prochainesVillesPossibles = new ArrayList<Integer>();
 		for(int ville : this.villesRestantes) {
-			/*if(distances[villeActuelle][ville]<=critere) {
+			if(distances[villeActuelle][ville]<=critere) {
 				prochainesVillesPossibles.add(ville);
-			}*/
+			}
 		}
 		return prochainesVillesPossibles;
 	}
-	
-	
 
 }
