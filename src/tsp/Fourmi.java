@@ -28,12 +28,16 @@ public class Fourmi {
 		}
 	}
 	
-	public ArrayList<Integer> prochainesvillesPossibles() {
-		ArrayList<Integer> prochainsvillesPossibles = new ArrayList<Integer>();
+	public ArrayList<Integer> prochainesVillesPossibles() {
+		int critere;
+		//long[][] distances = Colonie.getInstance().getDistance();
+		ArrayList<Integer> prochainesVillesPossibles = new ArrayList<Integer>();
 		for(int ville : this.villesRestantes) {
-						
+			/*if(distances[villeActuelle][ville]<=critere) {
+				prochainesVillesPossibles.add(ville);
+			}*/
 		}
-		return prochainsvillesPossibles;
+		return prochainesVillesPossibles;
 	}
 	
 	
