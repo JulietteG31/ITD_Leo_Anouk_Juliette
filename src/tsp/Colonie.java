@@ -30,4 +30,10 @@ public class Colonie {
 	public Integer[][] getPheromones() {
 		return this.pheromones;
 	}
+	public Integer getPheromones(int i, int j) throws Exception {
+		if(i < 0 || j < 0 || i >= this.getInstance().getNbCities() || j >= this.getInstance().getNbCities())
+			throw new Exception("Vous demandez pheromones[i][j] avec des index qui dépassent les limites");
+		
+		return (i<j) ? this.getPheromones()[i][j] : this.getPheromones()[j][i];
+	}
 }

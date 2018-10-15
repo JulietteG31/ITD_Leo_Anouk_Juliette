@@ -1,6 +1,7 @@
 package tsp;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Fourmi {
@@ -41,6 +42,38 @@ public class Fourmi {
 			}*/
 		}
 		return prochainesVillesPossibles;
+	}
+	
+	/*
+	 * Retourne un Hashmap avec en clé le numéro de la ville et en valeur la probabilité
+	 */
+	public HashMap<Integer,Double> probabilitesVillesPossibles() throws Exception {
+		double alpha = 1.0;
+		double beta = 1.0;
+
+		ArrayList<Integer> prochainesVillesPossibles = this.prochainesVillesPossibles();
+		
+		HashMap<Integer,Double> probabilites = new HashMap();
+		double probabilite;		
+		
+		/*
+		 * On calcule pour chaque ville la probabilité de la choisir comme prochaine
+		 * destination
+		 */
+		double sommeProbabilites = 0.0;
+		for(int ville : prochainesVillesPossibles) {
+			probabilite = Math.pow(1/this.colonie.getInstance().getDistances(this.villeActuelle, ville), alpha)*Math.pow(this.colonie.getPheromones(this.villeActuelle, ville), beta);
+			sommeProbabilites += probabilite;
+			probabilites.put(ville, probabilite);
+		}
+		/* 
+		 * On ajuste les probabilités pour que la somme de toutes vaut 1
+		 */
+		for(int ville : prochainesVillesPossibles) {
+			probabilites.put(ville, probabilites.get(ville)/sommeProbabilites);
+		}
+		
+		return probabilites;
 	}
 	
 	
