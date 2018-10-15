@@ -11,18 +11,21 @@ public class Fourmi {
 	private int etat;
 	private int distance;
 	
+	private Colonie colonie;
+	
 	
 	public Fourmi(ArrayList<Integer> villesVisitees, ArrayList<Integer> villesRestantes, int villeActuelle, int etat,
-			int distance) {
+			int distance, Colonie colonie) {
 		this.villesVisitees = villesVisitees;
 		this.villesRestantes = villesRestantes;
 		this.villeActuelle = villeActuelle;
 		this.etat = etat;
 		this.distance = distance;
+		this.colonie = colonie;
 	}
 	
-	public Fourmi() {
-		this(new ArrayList<Integer>(),new ArrayList<Integer>(),0,0,0 );
+	public Fourmi(Colonie colonie) {
+		this(new ArrayList<Integer>(),new ArrayList<Integer>(),0,0,0, colonie);
 		for(int i=0;i<442;i++) {
 			this.villesRestantes.add(i);
 		}
