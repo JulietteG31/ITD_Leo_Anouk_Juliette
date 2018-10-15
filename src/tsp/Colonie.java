@@ -10,9 +10,9 @@ public class Colonie {
 	 * triangulaire car pheromones[1][2] = pheromones[2][1] 
 	 */
 	
-	Integer[][] pheromones;
-	ArrayList<Fourmi> fourmis;
-	Instance instance;
+	public Integer[][] pheromones;
+	private ArrayList<Fourmi> fourmis;
+	private Instance instance;
 	
 	public Colonie(int nbFourmis, Instance instance) {
 		this.instance = instance;
@@ -22,5 +22,12 @@ public class Colonie {
 			fourmi = new Fourmi(this);
 			this.fourmis.add(fourmi);
 		}
+	}
+	
+	public Instance getInstance() {
+		return this.instance;
+	}
+	public Integer[][] getPheromones() {
+		return this.pheromones;
 	}
 }
