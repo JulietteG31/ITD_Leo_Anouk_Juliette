@@ -160,10 +160,12 @@ public class Fourmi {
 	public void parcourir() throws Exception {
 		if(this.arriveeADestination()) {
 			
+
 		}
 		else {
 			
 		}
+
 
 	}
 	
