@@ -202,8 +202,10 @@ public class Fourmi {
 			this.initialiser();
 			this.parcourir();
 		}
-		else {  
-			
+		else { 
+			int villeSuivante=NextStep();
+			this.avancer(villeSuivante);
+			this.parcourir();
 		} 
 	}
 
