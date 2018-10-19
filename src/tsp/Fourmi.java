@@ -135,15 +135,15 @@ public class Fourmi {
 			for(int i = 0; i < n-1; i++) {
 				villeA = this.villesVisitees.get(i);
 				villeB = this.villesVisitees.get(i+1);
-				// Il faut toujours que villeA < villeB
-				villeA = (villeA < villeB) ? villeA : villeB;
-				
 				this.colonie.incPheromones(villeA, villeB, 1);
 			}
 		}
 	}
 
-	
+	/**
+	 * @return true si la fourmi est arrivée à destination, false sinon
+	 * @throws Exception
+	 */
 	public boolean arriveeADestination() throws Exception {
 		if(this.villesRestantes.size()==0) {
 			this.etat=2;
