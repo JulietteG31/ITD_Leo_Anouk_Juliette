@@ -11,6 +11,7 @@ public class Fourmi {
 	private int villeActuelle;
 	private int etat; // 0:au départ 1:aller 2:retour
 	private int distance; // somme de toutes les distances parcourues par la fourmi
+
 	
 	private Colonie colonie;
 	
@@ -120,5 +121,19 @@ public class Fourmi {
 				this.colonie.incPheromones(villeA, villeB, 1);
 			}
 		}
+	}
+
+	
+	public boolean arriveeADestination() throws Exception {
+		if(this.villesRestantes.size()==0) {
+			this.etat=2;
+			return true;
+		}
+		else {
+			return false;
+		}
+	
+
+>>>>>>> branch 'master' of https://github.com/JulietteG31/ITD_Leo_Anouk_Juliette.git
 	}
 } 
