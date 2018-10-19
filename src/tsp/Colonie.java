@@ -21,6 +21,11 @@ public class Colonie {
 		for(int i = 0; i < nbFourmis; i++) {
 			fourmi = new Fourmi(this);
 			this.fourmis.add(fourmi);
+			
+			// Initialisation des phéromones
+			for(int j = 0; j < nbFourmis; j++) {
+				this.pheromones[i][j] = 0;
+			}
 		}
 	}
 	

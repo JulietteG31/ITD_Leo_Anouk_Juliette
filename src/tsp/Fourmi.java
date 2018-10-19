@@ -54,7 +54,7 @@ public class Fourmi {
 		ArrayList<Integer> prochainesVillesPossibles = this.prochainesVillesPossibles();
 		
 		HashMap<Integer,Double> probabilites = new HashMap();
-		double probabilite;		
+		double probabilite;		 
 		
 		/*
 		 * On calcule pour chaque ville la probabilité de la choisir comme prochaine
