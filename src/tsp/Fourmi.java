@@ -37,7 +37,9 @@ public class Fourmi {
 	 */
 	public Fourmi(Colonie colonie) {
 		this(new ArrayList<Integer>(),new ArrayList<Integer>(),0,0,0, colonie);
-		this.initialiser();
+		for(int i=0;i<442;i++) {
+			this.villesRestantes.add(i);
+		}
 	}
 	
 	/**
@@ -114,7 +116,7 @@ public class Fourmi {
 		}
 			return villeSuivante ;
 	}
-	
+
 	/**
 	 * Description : dépose des phéromones sur le chemin retour.
 	 * @throws Exception
@@ -142,10 +144,7 @@ public class Fourmi {
 	 * @throws Exception
 	 */
 	public boolean arriveeADestination() throws Exception {
-		if(this.villesRestantes.size()==0) {
-			// On ferme la boucle du trajet
-			this.avancer(0);
-			
+		if(this.villesRestantes.size()==0 && this.villeActuelle==0) {
 			this.etat=2;
 			return true;
 		}
@@ -154,49 +153,18 @@ public class Fourmi {
 		}
 	}
 	
-<<<<<<< HEAD
-=======
-	/**
-	 * Initialise une fourmi (ou la réinitialise)
-	 */
-	public void initialiser() {
-		this.villeActuelle = 0;
-		this.etat = 0;
-		this.distance = 0;
-		this.villesVisitees = new ArrayList();
-		
-		for(int i=0;i<this.colonie.getInstance().getNbCities();i++) {
-			this.villesRestantes.add(i);
-		}
-	}
-	
-	public int[] mettreAJourMeilleurChemin() {
-		return null;
-	}
-	
->>>>>>> branch 'master' of https://github.com/JulietteG31/ITD_Leo_Anouk_Juliette.git
 	/**
 	 * Description : défini comment la fourmi doit se déplacer dans le graphe.
 	 * @throws Exception
 	 */
 	public void parcourir() throws Exception {
 		if(this.arriveeADestination()) {
-			this.deposerPheromones();
-			this.mettreAJourMeilleurChemin();
-			this.initialiser();
-			this.parcourir();
-		}
-		else { 
 			
 		}
-<<<<<<< HEAD
 		else {
 			
 		}
 
 	}
-=======
-	}
->>>>>>> branch 'master' of https://github.com/JulietteG31/ITD_Leo_Anouk_Juliette.git
+	
 } 
-
