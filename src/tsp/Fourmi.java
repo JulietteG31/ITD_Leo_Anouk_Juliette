@@ -76,25 +76,6 @@ public class Fourmi {
 		
 		return probabilites;
 	}
-public int NextStep() {
-		
-		// boucle qui retourne somme (autre)
-		//ponderation de chacune des prochainesVillesPossibles poids=(phero^alpha*(1/d)^Beta)/ somme
-		int i=0;
-		while (i==0) {
-			if(Math.random()<= prochainesVillesPossibles.get(i).probabilities) {
-				int villeSuivante=prochainesVillesPossibles.get(i);
-				i+=1;
-			}
-			else {
-				prochainesVillesPossibles().remove(0);
-				for (int villesuiv: prochainesVillesPossibles()) {
-					villesuiv.probabilities=(villesuiv.probabilities)/(1.0-ville.probabilities);
-					
-				}
-			}
-		}
-			return villeSuivante;
-		}
+
 
 } 
