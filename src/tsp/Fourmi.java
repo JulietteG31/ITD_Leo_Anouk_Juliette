@@ -162,9 +162,10 @@ public class Fourmi {
 		this.villeActuelle = 0;
 		this.etat = 0;
 		this.distance = 0;
-		this.villesVisitees = new ArrayList();
+		this.villesVisitees = new ArrayList<Integer>();
+		this.villesVisitees.add(0);
 		
-		for(int i=0;i<this.colonie.getInstance().getNbCities();i++) {
+		for(int i=1;i<this.colonie.getInstance().getNbCities();i++) {
 			this.villesRestantes.add(i);
 		}
 	}
