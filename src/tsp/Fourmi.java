@@ -43,9 +43,11 @@ public class Fourmi {
 		
 		// boucle qui retourne somme 
 		//ponderation de chacune des prochainesVillesPossibles poids=(phero^alpha*(1/d)^Beta)/ somme
-		for (int ville : prochainesVillesPossibles()) {
-			if(Math.random()<= ville.poids) {
-				int villeSuivante=ville;
+		int i=0;
+		while (i==0) {
+			if(Math.random()<= prochainesVillesPossibles.get(i).poids) {
+				int villeSuivante=prochainesVillesPossibles.get(i);
+				i+=1;
 			}
 			else {
 				prochainesVillesPossibles().remove(0);
