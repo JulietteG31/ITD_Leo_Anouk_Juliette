@@ -41,7 +41,7 @@ public class Fourmi {
 	}
 	public int NextStep() {
 		
-		// boucle qui retourne somme 
+		// boucle qui retourne somme (autre)
 		//ponderation de chacune des prochainesVillesPossibles poids=(phero^alpha*(1/d)^Beta)/ somme
 		int i=0;
 		while (i==0) {
