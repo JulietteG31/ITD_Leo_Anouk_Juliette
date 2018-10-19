@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * @author Juliette
+ * @author Juliette, Léo, Anouk
  *
  */
 public class Fourmi {
