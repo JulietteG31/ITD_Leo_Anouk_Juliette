@@ -41,4 +41,20 @@ public class Colonie {
 		
 		return (i<j) ? this.getPheromones()[i][j] : this.getPheromones()[j][i];
 	}
+	public void setPheromones(int i, int j, int value) throws Exception {
+		if(i < 0 || j < 0 || i >= this.getInstance().getNbCities() || j >= this.getInstance().getNbCities())
+			throw new Exception("Vous demandez pheromones[i][j] avec des index qui dépassent les limites");
+		
+		this.pheromones[i][j] = value;
+	}
+	
+	/*
+	 * Incrémenter les phéromones
+	 */
+	public void incPheromones(int i, int j, int inc) throws Exception {
+		if(i < 0 || j < 0 || i >= this.getInstance().getNbCities() || j >= this.getInstance().getNbCities())
+			throw new Exception("Vous demandez pheromones[i][j] avec des index qui dépassent les limites");
+		
+		this.pheromones[i][j] = this.getPheromones(i, j) + inc;
+	}
 }
