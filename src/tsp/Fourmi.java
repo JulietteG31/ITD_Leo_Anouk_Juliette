@@ -8,8 +8,8 @@ public class Fourmi {
 	private ArrayList<Integer> villesVisitees;
 	private ArrayList<Integer> villesRestantes;
 	private int villeActuelle;
-	private int etat;
-	private int distance;
+	private int etat; // 0:au départ 1:aller 2:retour
+	private int distance; // somme de toutes les distances parcourues par la fourmi
 	
 	private Colonie colonie;
 	
