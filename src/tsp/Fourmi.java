@@ -11,6 +11,7 @@ public class Fourmi {
 	private int villeActuelle;
 	private int etat; // 0:au départ 1:aller 2:retour
 	private int distance; // somme de toutes les distances parcourues par la fourmi
+
 	
 	private Colonie colonie;
 	
