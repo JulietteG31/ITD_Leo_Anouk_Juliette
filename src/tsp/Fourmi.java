@@ -145,7 +145,7 @@ public class Fourmi {
 	 * @throws Exception
 	 */
 	public boolean arriveeADestination() throws Exception {
-		if(this.villesRestantes.size()==0) {
+		if(this.villesRestantes.size()==0 && this.villeActuelle==0) {
 			this.etat=2;
 			return true;
 		}
