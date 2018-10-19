@@ -14,6 +14,11 @@ public class Colonie {
 	private ArrayList<Fourmi> fourmis;
 	private Instance instance;
 	
+	/**
+	 * Créer une colonie de nbFourmis Fourmi Fourmis et créer la matrice triangulaire supérieure des phéromones 
+	 * @param nbFourmis
+	 * @param instance
+	 */
 	public Colonie(int nbFourmis, Instance instance) {
 		this.instance = instance;
 		
