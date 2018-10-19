@@ -167,4 +167,13 @@ public class Fourmi {
 
 	}
 	
+	public void avancer(int villeSuivante) throws Exception {
+		distance+=this.colonie.getInstance().getDistances(villeActuelle, villeSuivante);
+		villesVisitees.add(villeSuivante);
+		villeActuelle=villeSuivante;
+		villesRestantes.remove(villesRestantes.indexOf(villeActuelle));
+		
+	}
+	
+	
 } 
