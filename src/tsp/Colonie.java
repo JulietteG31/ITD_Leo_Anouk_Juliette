@@ -26,7 +26,7 @@ public class Colonie {
 			for(int j = 0; j < nbFourmis; j++) {
 				this.pheromones[i][j] = 0;
 			}
-		}
+		} 
 	}
 	
 	public Instance getInstance() {
