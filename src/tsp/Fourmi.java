@@ -4,13 +4,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * @author Juliette
+ *
+ */
 public class Fourmi {
 	
 	private ArrayList<Integer> villesVisitees;
 	private ArrayList<Integer> villesRestantes;
-	private int villeActuelle;
-	private int etat; // 0:au départ 1:aller 2:retour
-	private int distance; // somme de toutes les distances parcourues par la fourmi
+	private int villeActuelle=0;
+	private int etat=0; // 0:au départ 1:aller 2:retour
+	private int distance=0; // somme de toutes les distances parcourues par la fourmi
 
 	
 	private Colonie colonie;
@@ -21,11 +25,16 @@ public class Fourmi {
 		this.villesVisitees = villesVisitees;
 		this.villesRestantes = villesRestantes;
 		this.villeActuelle = villeActuelle;
-		this.etat = etat; // 0:Au depart 1:aller 2:retour
-		this.distance = distance; // somme des distances parcourus par la fourmi
+		this.etat = etat; 
+		this.distance = distance; 
 		this.colonie = colonie;
 	}
 	
+	
+	/**
+	 * Description :  Constructeur par chaînage. Créer une fourmi au point de départ
+	 * @param colonie
+	 */
 	public Fourmi(Colonie colonie) {
 		this(new ArrayList<Integer>(),new ArrayList<Integer>(),0,0,0, colonie);
 		for(int i=0;i<442;i++) {
@@ -33,6 +42,10 @@ public class Fourmi {
 		}
 	}
 	
+	/**
+	 * Description : villes atteignables depuis la position actuelle de la fourmi. Critère arbitraire
+	 * @return liste des numéros des villes atteignables
+	 */
 	public ArrayList<Integer> prochainesVillesPossibles() {
 		int critere=100;
 		long[][] distances = this.colonie.getInstance().getDistances();
@@ -46,9 +59,11 @@ public class Fourmi {
 	}
 	
 
-	/*
-	 * Retourne un Hashmap avec en clé le numéro de la ville et en valeur la probabilité
-	 */
+/**
+ * Description : On associe chaque ville à sa probabilité d'être choisi à la prochaine étape
+ * @return Hashmap avec en clé le numéro de la ville et en valeur la probabilité. 
+ * @throws Exception
+ */
 	public HashMap<Integer,Double> probabilitesVillesPossibles() throws Exception {
 		double alpha = 1.0;
 		double beta = 1.0;
@@ -78,11 +93,12 @@ public class Fourmi {
 		return probabilites;
 	}
 	
-	
+/**
+ * Description : Utilisation des probabilités calculées pour choisir la prochaine destination
+ * @return le numéro de la prochaine ville à laquelle la fourmi va se rendre.
+ * @throws Exception
+ */
 	public int NextStep() throws Exception {
-		
-		// boucle qui retourne somme (autre)
-		//ponderation de chacune des prochainesVillesPossibles probabilite=(phero^alpha*(1/d)^Beta)/ somme
 		int i=0;
 		int villeSuivante=0;
 		HashMap<Integer,Double> proba = this.probabilitesVillesPossibles(); 
@@ -102,6 +118,10 @@ public class Fourmi {
 			return villeSuivante ;
 	}
 	
+	/**
+	 * Description : dépose des phéromones sur le chemin retour.
+	 * @throws Exception
+	 */
 	public void deposerPheromones() throws Exception {
 		/*
 		 * Il faut prendre les arcs de la ville n à n+1
@@ -115,15 +135,15 @@ public class Fourmi {
 			for(int i = 0; i < n-1; i++) {
 				villeA = this.villesVisitees.get(i);
 				villeB = this.villesVisitees.get(i+1);
-				// Il faut toujours que villeA < villeB
-				villeA = (villeA < villeB) ? villeA : villeB;
-				
 				this.colonie.incPheromones(villeA, villeB, 1);
 			}
 		}
 	}
 
-	
+	/**
+	 * @return true si la fourmi est arrivée à destination, false sinon
+	 * @throws Exception
+	 */
 	public boolean arriveeADestination() throws Exception {
 		if(this.villesRestantes.size()==0) {
 			this.etat=2;
