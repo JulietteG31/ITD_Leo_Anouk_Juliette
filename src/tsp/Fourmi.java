@@ -99,10 +99,6 @@ public class Fourmi {
 			}
 		}
 			return villeSuivante ;
-<<<<<<< HEAD
-		}
-
-=======
 	}
 	
 	public void deposerPheromones() throws Exception {
@@ -125,5 +121,4 @@ public class Fourmi {
 			}
 		}
 	}
->>>>>>> branch 'master' of https://github.com/JulietteG31/ITD_Leo_Anouk_Juliette.git
 } 
