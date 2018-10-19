@@ -58,6 +58,6 @@ public class Colonie {
 		if(i < 0 || j < 0 || i >= this.getInstance().getNbCities() || j >= this.getInstance().getNbCities())
 			throw new Exception("Vous demandez pheromones[i][j] avec des index qui dépassent les limites");
 		
-		this.setPheromones(i, j, this.getPheromones(i, j) + inc);
+		this.setPheromones(i, j, this.getPheromones(i, j) + inc); 
 	}
 }
