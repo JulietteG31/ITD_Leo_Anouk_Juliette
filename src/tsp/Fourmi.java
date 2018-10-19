@@ -100,7 +100,29 @@ public class Fourmi {
 			}
 		}
 			return villeSuivante ;
+	}
+	
+	public void deposerPheromones() throws Exception {
+		/*
+		 * Il faut prendre les arcs de la ville n à n+1
+		 * puis incrémenter l'arc en question sur les phéromones
+		 */
+		int villeA;
+		int villeB;
+		int n = this.villesVisitees.size();
+		
+		if(n >= 2) {
+			for(int i = 0; i < n-1; i++) {
+				villeA = this.villesVisitees.get(i);
+				villeB = this.villesVisitees.get(i+1);
+				// Il faut toujours que villeA < villeB
+				villeA = (villeA < villeB) ? villeA : villeB;
+				
+				this.colonie.incPheromones(villeA, villeB, 1);
+			}
 		}
+	}
+
 	
 	public boolean arriveeADestination() throws Exception {
 		if(this.NextStep()==0) {
@@ -110,6 +132,7 @@ public class Fourmi {
 		else {
 			return false;
 		}
-	}
+	
 
+	}
 } 
