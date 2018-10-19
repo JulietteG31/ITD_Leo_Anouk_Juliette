@@ -168,7 +168,7 @@ public class Fourmi {
 		for(int i=1;i<this.colonie.getInstance().getNbCities();i++) {
 			this.villesRestantes.add(i);
 		}
-	}
+	} 
 	
 	public int[] mettreAJourMeilleurChemin() {
 		return null;
