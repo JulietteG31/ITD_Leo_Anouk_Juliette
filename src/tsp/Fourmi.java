@@ -132,7 +132,15 @@ public class Fourmi {
 		else {
 			return false;
 		}
+	}
 	
-
+	
+	public void parcourir() throws Exception {
+		if(this.arriveeADestination()) {
+			
+		}
+		else {
+			
+		}
 	}
 } 
