@@ -23,7 +23,7 @@ public class Colonie {
 	 */
 	public Colonie(int nbFourmis, Instance instance) {
 		this.instance = instance;
-		
+		 
 		Fourmi fourmi;
 		int nbFourmisMeilleurChemin = (int) (Math.ceil(0.01*((double) nbFourmis)));
 		System.out.println(nbFourmisMeilleurChemin);

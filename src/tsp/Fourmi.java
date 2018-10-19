@@ -197,7 +197,7 @@ public class Fourmi {
 			this.deposerPheromones();
 			if(this.typeFourmi == 1)
 				this.deposerPheromones();
-			if(this.typeFourmi == 2)
+			if(this.typeFourmi == 2) 
 				this.mettreAJourMeilleurChemin();
 			this.initialiser();
 			this.parcourir();
