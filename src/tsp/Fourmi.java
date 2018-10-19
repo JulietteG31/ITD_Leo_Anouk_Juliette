@@ -184,7 +184,7 @@ public class Fourmi {
 			this.initialiser();
 			this.parcourir();
 		}
-		else {
+		else { 
 			
 		}
 	}
