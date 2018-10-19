@@ -68,7 +68,7 @@ public class Fourmi {
 			probabilites.put(ville, probabilite);
 		}
 		/* 
-		 * On ajuste les probabilités pour que la somme de toutes vaut 1
+		 * On ajuste les probabilités pour que la somme de toutes vaille 1
 		 */
 		for(int ville : prochainesVillesPossibles) {
 			probabilites.put(ville, probabilites.get(ville)/sommeProbabilites);
@@ -77,5 +77,28 @@ public class Fourmi {
 		return probabilites;
 	}
 
+	
+	public int NextStep() throws Exception {
+		
+		// boucle qui retourne somme (autre)
+		//ponderation de chacune des prochainesVillesPossibles probabilite=(phero^alpha*(1/d)^Beta)/ somme
+		int i=0;
+		int villeSuivante=0;
+		HashMap<Integer,Double> proba = this.probabilitesVillesPossibles(); 
+		ArrayList<Integer> prochainesVillesPossibles = prochainesVillesPossibles();
+		while (i==0) {
+			if(Math.random()<= proba.get(prochainesVillesPossibles.get(i))) {
+				villeSuivante=prochainesVillesPossibles.get(i);
+				i+=1;
+			}
+			else {
+				prochainesVillesPossibles.remove(0);
+				for (int villesuiv: prochainesVillesPossibles) {
+					proba.put(villesuiv, proba.get(villesuiv)/(1.0-proba.get(prochainesVillesPossibles.get(i))));
+				}
+			}
+		}
+			return villeSuivante ;
+		}
 
 } 
