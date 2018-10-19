@@ -125,7 +125,7 @@ public class Fourmi {
 
 	
 	public boolean arriveeADestination() throws Exception {
-		if(this.NextStep()==0) {
+		if(this.villesRestantes.size()==0) {
 			this.etat=2;
 			return true;
 		}
