@@ -12,6 +12,7 @@ public class Fourmi {
 	
 	private ArrayList<Integer> villesVisitees;
 	private ArrayList<Integer> villesRestantes;
+	private int typeFourmi = 1; // 1: fourmi exploratrice 2: fourmi meilleur chemin
 	private int villeActuelle=0;
 	private int etat=0; // 0:au départ 1:aller 2:retour
 	private int distance=0; // somme de toutes les distances parcourues par la fourmi
@@ -20,23 +21,32 @@ public class Fourmi {
 	private Colonie colonie;
 	
 	
-	public Fourmi(ArrayList<Integer> villesVisitees, ArrayList<Integer> villesRestantes, int villeActuelle, int etat,
+	public Fourmi(ArrayList<Integer> villesVisitees, ArrayList<Integer> villesRestantes, int typeFourmi, int villeActuelle, int etat,
 			int distance, Colonie colonie) {
 		this.villesVisitees = villesVisitees;
 		this.villesRestantes = villesRestantes;
+		this.typeFourmi = typeFourmi;
 		this.villeActuelle = villeActuelle;
 		this.etat = etat; 
 		this.distance = distance; 
 		this.colonie = colonie;
 	}
 	
+	/**
+	 * Description :  Constructeur par chaînage. Créer une fourmi au point de départ
+	 * @param colonie
+	 */
+	public Fourmi(Colonie colonie, int typeFourmi) {
+		this(new ArrayList<Integer>(),new ArrayList<Integer>(),typeFourmi,0,0,0, colonie);
+		this.initialiser();
+	}
 	
 	/**
 	 * Description :  Constructeur par chaînage. Créer une fourmi au point de départ
 	 * @param colonie
 	 */
 	public Fourmi(Colonie colonie) {
-		this(new ArrayList<Integer>(),new ArrayList<Integer>(),0,0,0, colonie);
+		this(new ArrayList<Integer>(),new ArrayList<Integer>(),1,0,0,0, colonie);
 		this.initialiser();
 	}
 	
@@ -63,7 +73,11 @@ public class Fourmi {
  * @throws Exception
  */
 	public HashMap<Integer,Double> probabilitesVillesPossibles() throws Exception {
-		double alpha = 1.0;
+		double alpha = 0.0;
+		if(this.typeFourmi == 1)
+			alpha = 1.0;
+		else if(this.typeFourmi == 2)
+			alpha = 0.0;
 		double beta = 1.0;
 
 		ArrayList<Integer> prochainesVillesPossibles = this.prochainesVillesPossibles();
@@ -170,8 +184,8 @@ public class Fourmi {
 		}
 	} 
 	
-	public int[] mettreAJourMeilleurChemin() {
-		return null;
+	public void mettreAJourMeilleurChemin() throws Exception {
+		this.colonie.setMeilleurChemin(this.villesVisitees, this.distance);
 	}
 	
 	/**
@@ -181,7 +195,10 @@ public class Fourmi {
 	public void parcourir() throws Exception {
 		if(this.arriveeADestination()) {
 			this.deposerPheromones();
-			this.mettreAJourMeilleurChemin();
+			if(this.typeFourmi == 1)
+				this.deposerPheromones();
+			if(this.typeFourmi == 2)
+				this.mettreAJourMeilleurChemin();
 			this.initialiser();
 			this.parcourir();
 		}

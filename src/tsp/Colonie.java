@@ -13,6 +13,8 @@ public class Colonie {
 	public int[][] pheromones;
 	private ArrayList<Fourmi> fourmis;
 	private Instance instance;
+	private ArrayList<Integer> meilleurChemin;
+	private int meilleureDistance = 0;
 	
 	/**
 	 * Créer une colonie de nbFourmis Fourmi Fourmis et créer la matrice triangulaire supérieure des phéromones 
@@ -23,8 +25,10 @@ public class Colonie {
 		this.instance = instance;
 		
 		Fourmi fourmi;
-		for(int i = 0; i < nbFourmis; i++) {
-			fourmi = new Fourmi(this);
+		int nbFourmisMeilleurChemin = (int) (Math.ceil(0.01*((double) nbFourmis)));
+		System.out.println(nbFourmisMeilleurChemin);
+		for(int i = 0; i < nbFourmis+nbFourmisMeilleurChemin; i++) {
+			fourmi = new Fourmi(this, (i < nbFourmis) ? 1 : 2);
 			this.fourmis.add(fourmi);
 		} 
 		
@@ -72,4 +76,15 @@ public class Colonie {
 		
 		this.setPheromones(i, j, this.getPheromones(i, j) + inc); 
 	}
+	
+	public void setMeilleurChemin(ArrayList<Integer> chemin, int distance) throws Exception {
+		if(chemin.get(0) != 0 || chemin.get(chemin.size()-1) != 0)
+			throw new Exception("Le format du chemin n'est pas bon");
+		
+		if(distance < this.meilleureDistance) {
+			this.meilleurChemin = chemin;
+			this.meilleureDistance = distance;
+		}
+	}
+	
 }
