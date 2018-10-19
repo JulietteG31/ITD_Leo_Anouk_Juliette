@@ -152,7 +152,19 @@ public class Fourmi {
 		else {
 			return false;
 		}
+	}
 	
-
+	
+	/**
+	 * Description : défini comment la fourmi doit se déplacer dans le graphe.
+	 * @throws Exception
+	 */
+	public void parcourir() throws Exception {
+		if(this.arriveeADestination()) {
+			
+		}
+		else {
+			
+		}
 	}
 } 

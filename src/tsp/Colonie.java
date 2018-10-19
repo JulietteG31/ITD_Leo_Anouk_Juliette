@@ -23,7 +23,7 @@ public class Colonie {
 			this.fourmis.add(fourmi);
 			
 			// Initialisation des phéromones
-			for(int j = 0; j < nbFourmis; j++) {
+			for(int j = 0; j < i+1; j++) {
 				this.pheromones[i][j] = 0;
 			}
 		} 
@@ -45,16 +45,19 @@ public class Colonie {
 		if(i < 0 || j < 0 || i >= this.getInstance().getNbCities() || j >= this.getInstance().getNbCities())
 			throw new Exception("Vous demandez pheromones[i][j] avec des index qui dépassent les limites");
 		
-		this.pheromones[i][j] = value;
+		if(i<j)
+			this.pheromones[i][j] = value;
+		else
+			this.pheromones[j][i] = value;
 	}
 	
 	/*
-	 * Incrémenter les phéromones
+	 * Incrémenter les phéromones d'une valeur inc
 	 */
 	public void incPheromones(int i, int j, int inc) throws Exception {
 		if(i < 0 || j < 0 || i >= this.getInstance().getNbCities() || j >= this.getInstance().getNbCities())
 			throw new Exception("Vous demandez pheromones[i][j] avec des index qui dépassent les limites");
 		
-		this.pheromones[i][j] = this.getPheromones(i, j) + inc;
+		this.setPheromones(i, j, this.getPheromones(i, j) + inc); 
 	}
 }
