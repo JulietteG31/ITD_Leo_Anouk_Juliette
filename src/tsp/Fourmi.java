@@ -19,8 +19,8 @@ public class Fourmi {
 		this.villesVisitees = villesVisitees;
 		this.villesRestantes = villesRestantes;
 		this.villeActuelle = villeActuelle;
-		this.etat = etat;
-		this.distance = distance;
+		this.etat = etat; // 0:Au depart 1:aller 2:retour
+		this.distance = distance; // somme des distances parcourus par la fourmi
 		this.colonie = colonie;
 	}
 	
@@ -42,5 +42,7 @@ public class Fourmi {
 		}
 		return prochainesVillesPossibles;
 	}
+	
+	
 
 }
