@@ -90,12 +90,8 @@ public class Fourmi {
  * @throws Exception
  */
 	public HashMap<Integer,Double> probabilitesVillesPossibles(ArrayList<Integer> prochainesVillesPossibles) throws Exception {
-		double alpha = 0.0;
-		if(this.typeFourmi == 1)
-			alpha = 1.0;
-		else if(this.typeFourmi == 2)
-			alpha = 0.0;
-		double beta = 1.0;
+		double alpha = 1.0;
+		double beta = 3.0;
 		
 		HashMap<Integer,Double> probabilites = new HashMap();
 		double probabilite;		 
@@ -131,22 +127,36 @@ public class Fourmi {
 		int i=0;
 		int villeSuivante=0;
 		ArrayList<Integer> prochainesVillesPossibles = prochainesVillesPossibles();
-		HashMap<Integer,Double> proba = this.probabilitesVillesPossibles(prochainesVillesPossibles); 
 		
 		if(prochainesVillesPossibles.size() >= 1) {
-			while (i==0) {
-				//System.err.println(prochainesVillesPossibles);
-				//System.err.println(prochainesVillesPossibles.size());
-				//System.err.println(proba);
-				if(prochainesVillesPossibles.size() == 1 || Math.random()<= proba.get(prochainesVillesPossibles.get(i))) {
-					villeSuivante=prochainesVillesPossibles.get(i);
-					i=1;
-					// i=1 donc on arrête la boucle
+			if(this.typeFourmi == 2) {
+				int maxPheromone = 0;
+				int pheromone;
+				for(int ville : prochainesVillesPossibles) {
+					pheromone = this.colonie.getPheromones(villeActuelle, ville);
+					if(pheromone >= maxPheromone) {
+						maxPheromone = pheromone;
+						villeSuivante = ville;
+					}
 				}
-				else {
-					prochainesVillesPossibles.remove(0);
-					for (int villesuiv: prochainesVillesPossibles) {
-						proba.put(villesuiv, proba.get(villesuiv)/(1.0-proba.get(prochainesVillesPossibles.get(i))));
+			}
+			else if(this.typeFourmi == 1) {
+				HashMap<Integer,Double> proba = this.probabilitesVillesPossibles(prochainesVillesPossibles); 
+				
+				while (i==0) {
+					//System.err.println(prochainesVillesPossibles);
+					//System.err.println(prochainesVillesPossibles.size());
+					//System.err.println(proba);
+					if(prochainesVillesPossibles.size() == 1 || Math.random()<= proba.get(prochainesVillesPossibles.get(i))) {
+						villeSuivante=prochainesVillesPossibles.get(i);
+						i=1;
+						// i=1 donc on arrête la boucle
+					}
+					else {
+						prochainesVillesPossibles.remove(0);
+						for (int villesuiv: prochainesVillesPossibles) {
+							proba.put(villesuiv, proba.get(villesuiv)/(1.0-proba.get(prochainesVillesPossibles.get(i))));
+						}
 					}
 				}
 			}
@@ -228,15 +238,12 @@ public class Fourmi {
 	 * @throws Exception
 	 */
 	public void parcourir() throws Exception {
-		if(this.nbTours < 10 && !this.colonie.doitOnArreterLAlgorithme()) {
+		if(this.typeFourmi == 2 || (this.typeFourmi == 1 && !this.colonie.doitOnArreterLAlgorithme())) {
 			if(this.arriveeADestination()) {			
-				this.deposerPheromones();
 				if(this.typeFourmi == 1)
 					this.deposerPheromones();
 				if(this.typeFourmi == 2) 
 					this.mettreAJourMeilleurChemin();
-				this.initialiser();
-				this.parcourir();
 			}
 			else { 
 				int villeSuivante=NextStep();
@@ -247,10 +254,6 @@ public class Fourmi {
 					this.avancer(villeSuivante);
 				this.parcourir();
 			} 
-		}
-		else {
-			System.err.println("Durée totale programme (ms) = "+this.colonie.getDureeMs());
-			System.err.println("Solution faisable = " + this.colonie.getSolution().isFeasible());
 		}
 	}
 

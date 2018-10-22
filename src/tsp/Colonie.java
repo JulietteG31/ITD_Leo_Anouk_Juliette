@@ -3,6 +3,8 @@ package tsp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Colonie {
 	/* 
@@ -17,7 +19,7 @@ public class Colonie {
 	}
 
 	public int[][] pheromones;
-	private ArrayList<Fourmi> fourmis;
+	public ArrayList<Fourmi> fourmis;
 	private ArrayList<Integer> meilleurChemin;
 	private int meilleureDistance = 0;
 	
@@ -40,12 +42,10 @@ public class Colonie {
 		int nbVilles = instance.getNbCities();
 		
 		Fourmi fourmi;
-		int nbFourmisMeilleurChemin = (int) (Math.ceil(0.01*((double) nbFourmis)));
-		//nbFourmisMeilleurChemin = 0;
 		this.fourmis = new ArrayList<Fourmi>();
 		
-		for(int i = 0; i < nbFourmis+nbFourmisMeilleurChemin; i++) {
-			fourmi = new Fourmi(this, (i < nbFourmis) ? 1 : 2);
+		for(int i = 0; i < nbFourmis; i++) {
+			fourmi = new Fourmi(this,1);
 			this.fourmis.add(fourmi);
 		} 
 		
@@ -117,9 +117,24 @@ public class Colonie {
 	public void commencer() throws Exception {
 		this.startTime = System.currentTimeMillis();
 		
-		for(Fourmi fourmi : this.fourmis) {
-			fourmi.parcourir();
+		ThreadFourmis thread;
+		
+		int depart = 0;
+		int nbFourmis = this.fourmis.size();
+			
+		for(int i = 1; i <= 4; i++) {
+			thread = new ThreadFourmis(this, depart);
+			thread.start();
+			
+			depart += nbFourmis/4;
 		}
+		
+		while(!this.doitOnArreterLAlgorithme());
+		
+		Fourmi fourmiSolution = new Fourmi(this, 2);
+		fourmiSolution.parcourir();
+		System.err.println("Durée totale programme (ms) = "+this.getDureeMs());
+		System.err.println("Solution faisable = " + this.getSolution().isFeasible());
 	}
 	
 	public float getDureeMs() {
@@ -129,7 +144,7 @@ public class Colonie {
 		return (System.currentTimeMillis() - this.startTime)/1000;
 	}
 	public boolean doitOnArreterLAlgorithme() {
-		return this.getDuree() > this.timeLimit;
+		return this.getDuree() > this.timeLimit-1;
 	}
 	
 }

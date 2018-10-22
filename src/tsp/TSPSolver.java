@@ -68,13 +68,13 @@ public class TSPSolver {
 	 */
 	public void solve() throws Exception
 	{
-		Colonie colonie = new Colonie(1, this.m_instance, this.m_solution, this.m_timeLimit);
+		Colonie colonie = new Colonie(500, this.m_instance, this.m_solution, this.m_timeLimit);
 		this.setSolution(colonie.getSolution());
 		/*m_solution.print(System.err);
 		
 		// Example of a time loop
 		long startTime = System.currentTimeMillis();
-		long spentTime = 0; 
+		long spentTime = 0;
 		do
 		{
 			// TODO
