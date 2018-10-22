@@ -68,7 +68,9 @@ public class TSPSolver {
 	 */
 	public void solve() throws Exception
 	{
-		m_solution.print(System.err);
+		Colonie colonie = new Colonie(1, this.m_instance, this.m_solution, this.m_timeLimit);
+		this.setSolution(colonie.getSolution());
+		/*m_solution.print(System.err);
 		
 		// Example of a time loop
 		long startTime = System.currentTimeMillis();
@@ -78,7 +80,7 @@ public class TSPSolver {
 			// TODO
 			// Code a loop base on time here
 			spentTime = System.currentTimeMillis() - startTime;
-		}while(spentTime < (m_timeLimit * 1000 - 100) );
+		}while(spentTime < (m_timeLimit * 1000 - 100) );*/
 		
 	}
 
