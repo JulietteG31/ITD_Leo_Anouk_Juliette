@@ -249,7 +249,8 @@ public class Fourmi {
 			} 
 		}
 		else {
-			System.err.println("DUREE = "+this.colonie.getDuree());
+			System.err.println("Durée totale programme (ms) = "+this.colonie.getDureeMs());
+			System.err.println("Solution faisable = " + this.colonie.getSolution().isFeasible());
 		}
 	}
 

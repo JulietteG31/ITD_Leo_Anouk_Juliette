@@ -122,6 +122,9 @@ public class Colonie {
 		}
 	}
 	
+	public float getDureeMs() {
+		return (System.currentTimeMillis() - this.startTime);
+	}
 	public long getDuree() {
 		return (System.currentTimeMillis() - this.startTime)/1000;
 	}
