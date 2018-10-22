@@ -10,19 +10,27 @@ import java.util.List;
  */
 public class Fourmi {
 	
+	@Override
+	public String toString() {
+		return "Fourmi [villesVisitees=" + villesVisitees + ", villesRestantes=" + villesRestantes + ", typeFourmi="
+				+ typeFourmi + ", villeActuelle=" + villeActuelle + ", etat=" + etat + ", distance=" + distance
+				+ ", colonie=" + colonie + "]";
+	}
+
 	private ArrayList<Integer> villesVisitees;
 	private ArrayList<Integer> villesRestantes;
 	private int typeFourmi = 1; // 1: fourmi exploratrice 2: fourmi meilleur chemin
-	private int villeActuelle=0;
-	private int etat=0; // 0:au départ 1:aller 2:retour
-	private int distance=0; // somme de toutes les distances parcourues par la fourmi
-
+	private int villeActuelle;
+	private int etat; // 0:au départ 1:aller 2:retour
+	private int distance; // somme de toutes les distances parcourues par la fourmi
+	
+	private int nbTours;
 	
 	private Colonie colonie;
 	
 	
 	public Fourmi(ArrayList<Integer> villesVisitees, ArrayList<Integer> villesRestantes, int typeFourmi, int villeActuelle, int etat,
-			int distance, Colonie colonie) {
+			int distance, Colonie colonie) throws Exception {
 		this.villesVisitees = villesVisitees;
 		this.villesRestantes = villesRestantes;
 		this.typeFourmi = typeFourmi;
@@ -30,40 +38,49 @@ public class Fourmi {
 		this.etat = etat; 
 		this.distance = distance; 
 		this.colonie = colonie;
+
+		this.nbTours = 0;
+		
+		this.initialiser();
 	}
 	
 	/**
 	 * Description :  Constructeur par chaînage. Créer une fourmi au point de départ
 	 * @param colonie
+	 * @throws Exception 
 	 */
-	public Fourmi(Colonie colonie, int typeFourmi) {
+	public Fourmi(Colonie colonie, int typeFourmi) throws Exception {
 		this(new ArrayList<Integer>(),new ArrayList<Integer>(),typeFourmi,0,0,0, colonie);
-		this.initialiser();
 	}
 	
 	/**
 	 * Description :  Constructeur par chaînage. Créer une fourmi au point de départ
 	 * @param colonie
+	 * @throws Exception 
 	 */
-	public Fourmi(Colonie colonie) {
+	public Fourmi(Colonie colonie) throws Exception {
 		this(new ArrayList<Integer>(),new ArrayList<Integer>(),1,0,0,0, colonie);
-		this.initialiser();
 	}
 	
 	/**
 	 * Description : villes atteignables depuis la position actuelle de la fourmi. Critère arbitraire
+	 * @param rayonRecherche (-1 pour tout accepter)
 	 * @return liste des numéros des villes atteignables
 	 */
-	public ArrayList<Integer> prochainesVillesPossibles() {
-		int critere=100;
+	public ArrayList<Integer> prochainesVillesPossibles(int rayonRecherche) {
+		int nbVillesMinimum = 5;
+		
 		long[][] distances = this.colonie.getInstance().getDistances();
 		ArrayList<Integer> prochainesVillesPossibles = new ArrayList<Integer>();
 		for(int ville : this.villesRestantes) {
-			if(distances[villeActuelle][ville]<=critere) {
+			if(rayonRecherche == -1 || distances[villeActuelle][ville]<=rayonRecherche) {
 				prochainesVillesPossibles.add(ville);
 			}
 		}
 		return prochainesVillesPossibles;
+	}
+	public ArrayList<Integer> prochainesVillesPossibles() {
+		return prochainesVillesPossibles(-1);
 	}
 	
 
@@ -72,15 +89,13 @@ public class Fourmi {
  * @return Hashmap avec en clé le numéro de la ville et en valeur la probabilité. 
  * @throws Exception
  */
-	public HashMap<Integer,Double> probabilitesVillesPossibles() throws Exception {
+	public HashMap<Integer,Double> probabilitesVillesPossibles(ArrayList<Integer> prochainesVillesPossibles) throws Exception {
 		double alpha = 0.0;
 		if(this.typeFourmi == 1)
 			alpha = 1.0;
 		else if(this.typeFourmi == 2)
 			alpha = 0.0;
 		double beta = 1.0;
-
-		ArrayList<Integer> prochainesVillesPossibles = this.prochainesVillesPossibles();
 		
 		HashMap<Integer,Double> probabilites = new HashMap();
 		double probabilite;		 
@@ -91,7 +106,7 @@ public class Fourmi {
 		 */
 		double sommeProbabilites = 0.0;
 		for(int ville : prochainesVillesPossibles) {
-			probabilite = Math.pow(1/this.colonie.getInstance().getDistances(this.villeActuelle, ville), alpha)*Math.pow(this.colonie.getPheromones(this.villeActuelle, ville), beta);
+			probabilite = Math.pow(1.0/((double) this.colonie.getInstance().getDistances(this.villeActuelle, ville)), alpha)*Math.pow((double)this.colonie.getPheromones(this.villeActuelle, ville), beta);
 			sommeProbabilites += probabilite;
 			probabilites.put(ville, probabilite);
 		}
@@ -110,24 +125,39 @@ public class Fourmi {
  * @return le numéro de la prochaine ville à laquelle la fourmi va se rendre.
  * @throws Exception
  */
+	
+	// Non optimal et bug pour ajuster
 	public int NextStep() throws Exception {
 		int i=0;
 		int villeSuivante=0;
-		HashMap<Integer,Double> proba = this.probabilitesVillesPossibles(); 
 		ArrayList<Integer> prochainesVillesPossibles = prochainesVillesPossibles();
-		while (i==0) {
-			if(Math.random()<= proba.get(prochainesVillesPossibles.get(i))) {
-				villeSuivante=prochainesVillesPossibles.get(i);
-				i+=1;
-			}
-			else {
-				prochainesVillesPossibles.remove(0);
-				for (int villesuiv: prochainesVillesPossibles) {
-					proba.put(villesuiv, proba.get(villesuiv)/(1.0-proba.get(prochainesVillesPossibles.get(i))));
+		HashMap<Integer,Double> proba = this.probabilitesVillesPossibles(prochainesVillesPossibles); 
+		
+		if(prochainesVillesPossibles.size() >= 1) {
+			while (i==0) {
+				//System.err.println(prochainesVillesPossibles);
+				//System.err.println(prochainesVillesPossibles.size());
+				//System.err.println(proba);
+				if(prochainesVillesPossibles.size() == 1 || Math.random()<= proba.get(prochainesVillesPossibles.get(i))) {
+					villeSuivante=prochainesVillesPossibles.get(i);
+					i=1;
+					// i=1 donc on arrête la boucle
+				}
+				else {
+					prochainesVillesPossibles.remove(0);
+					for (int villesuiv: prochainesVillesPossibles) {
+						proba.put(villesuiv, proba.get(villesuiv)/(1.0-proba.get(prochainesVillesPossibles.get(i))));
+					}
 				}
 			}
 		}
-			return villeSuivante ;
+		else {
+			// On peut être dans un cul de sac à cause du critère de distance de prochainesVillesPossibles()
+			villeSuivante = -1;
+		}
+		
+		//System.err.println();
+		return villeSuivante;
 	}
 	
 	/**
@@ -171,21 +201,26 @@ public class Fourmi {
 	
 	/**
 	 * Initialise une fourmi (ou la réinitialise)
+	 * @throws Exception 
 	 */
-	public void initialiser() {
+	public void initialiser() throws Exception {		
 		this.villeActuelle = 0;
 		this.etat = 0;
 		this.distance = 0;
 		this.villesVisitees = new ArrayList<Integer>();
-		this.villesVisitees.add(0);
+		this.villesRestantes = new ArrayList<Integer>();
 		
+		this.villesVisitees.add(0);
 		for(int i=1;i<this.colonie.getInstance().getNbCities();i++) {
 			this.villesRestantes.add(i);
 		}
+	
+		this.nbTours++;
 	} 
 	
 	public void mettreAJourMeilleurChemin() throws Exception {
-		this.colonie.setMeilleurChemin(this.villesVisitees, this.distance);
+		if(this.villesRestantes.size()==0)
+			this.colonie.setMeilleurChemin(this.villesVisitees, this.distance);
 	}
 	
 	/**
@@ -193,20 +228,29 @@ public class Fourmi {
 	 * @throws Exception
 	 */
 	public void parcourir() throws Exception {
-		if(this.arriveeADestination()) {
-			this.deposerPheromones();
-			if(this.typeFourmi == 1)
+		if(this.nbTours < 10 && !this.colonie.doitOnArreterLAlgorithme()) {
+			if(this.arriveeADestination()) {			
 				this.deposerPheromones();
-			if(this.typeFourmi == 2) 
-				this.mettreAJourMeilleurChemin();
-			this.initialiser();
-			this.parcourir();
+				if(this.typeFourmi == 1)
+					this.deposerPheromones();
+				if(this.typeFourmi == 2) 
+					this.mettreAJourMeilleurChemin();
+				this.initialiser();
+				this.parcourir();
+			}
+			else { 
+				int villeSuivante=NextStep();
+				// Si la fourmi est bloquée dans un cul de sac
+				if(villeSuivante == -1)
+					this.initialiser();
+				else
+					this.avancer(villeSuivante);
+				this.parcourir();
+			} 
 		}
-		else { 
-			int villeSuivante=NextStep();
-			this.avancer(villeSuivante);
-			this.parcourir();
-		} 
+		else {
+			System.err.println("DUREE = "+this.colonie.getDuree());
+		}
 	}
 
 	/**
@@ -214,11 +258,12 @@ public class Fourmi {
 	 * @param villeSuivante
 	 * @throws Exception
 	 */
-	public void avancer(int villeSuivante) throws Exception {
+	public void avancer(int villeSuivante) throws Exception {		
 		distance+=this.colonie.getInstance().getDistances(villeActuelle, villeSuivante);
 		villesVisitees.add(villeSuivante);
 		villeActuelle=villeSuivante;
-		villesRestantes.remove(villesRestantes.indexOf(villeActuelle));
+		if(villesRestantes.size() > 0)
+			villesRestantes.remove(villesRestantes.indexOf(villeActuelle));
 		
 	}
 } 
