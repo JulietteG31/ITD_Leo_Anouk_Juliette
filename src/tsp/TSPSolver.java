@@ -74,7 +74,7 @@ public class TSPSolver {
 		
 		// Example of a time loop
 		long startTime = System.currentTimeMillis();
-		long spentTime = 0;
+		long spentTime = 0; 
 		do
 		{
 			// TODO
