@@ -21,8 +21,20 @@ public class PlusProcheVoisin {
 		this.solution = solution;
 	}
 	
+	/**
+	 * Description: on initialise avec seule la premiere ville (villeActuelle) dans la liste des villes visitees villesVisitees, toutes les autre villes dans villesRestantes et la villeActuelle a la ville 0
+	 * On lance avancer pour enclancher le deplacement de ville en ville
+	 * @param instance
+	 * @param solution
+	 * @throws Exception
+	 */
 	public PlusProcheVoisin(Instance instance, Solution solution) throws Exception{
 		this(new ArrayList<Integer>(0),new ArrayList<Integer>(),0,0,instance,solution);
+		
+		for(int ville = 0; ville < this.instance.getNbCities(); ville++) {
+			this.villesRestantes.add(ville);
+		}
+		
 		avancer();
 	}
 	
@@ -31,15 +43,23 @@ public class PlusProcheVoisin {
 	 * Si il n'y a plus de villes non visitees --> retour a la ville 0
 	 */
 	
-
+	/**
+	 * 
+	 * @param villeActuelle
+	 * @return la ville non visitee la plus proche de notre ville actuelle villeActuelle
+	 * @throws Exception
+	 */
 
 	public int PlusProche(int villeActuelle) throws Exception {
-		long d=this.instance.getDistances(villeActuelle, villesRestantes.get(0));
-		int VilleSuiv=villesRestantes.get(0);
-		for (int ville : villesVisitees) {
-			if (this.instance.getDistances(villeActuelle, ville)<=d){
-					d=this.instance.getDistances(villeActuelle, ville);
-					VilleSuiv=ville;
+		int VilleSuiv=0;
+		if(villesRestantes.size() > 0) {
+			long d=this.instance.getDistances(villeActuelle, villesRestantes.get(0));
+			VilleSuiv=villesRestantes.get(0);
+			for (int ville : villesRestantes) {
+				if (this.instance.getDistances(villeActuelle, ville)<=d){
+						d=this.instance.getDistances(villeActuelle, ville);
+						VilleSuiv=ville;
+				}
 			}
 		}
 		return VilleSuiv;
@@ -47,6 +67,11 @@ public class PlusProcheVoisin {
 	
 	/*
 	 * si il reste des villesRestantes on fait plusproche et on y va, si villesRestantes est vide on retourne a la premiere ville 
+	 */
+	
+	/**
+	 * Description: si il reste des villes non visitees dans villesRestantes, on va a la ville la plus proche, si villesRestantes est vide on retourne a la premiere ville (ville 0) 
+	 * @throws Exception
 	 */
 	
 	public void avancer() throws Exception {		
