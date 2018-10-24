@@ -68,7 +68,7 @@ public class TSPSolver {
 	 */
 	public void solve() throws Exception
 	{
-		Colonie colonie = new Colonie(4, this.m_instance, this.m_solution, this.m_timeLimit);
+		Colonie colonie = new Colonie(750, this.m_instance, this.m_solution, this.m_timeLimit);
 		this.setSolution(colonie.getSolution());
 		/*m_solution.print(System.err);
 		

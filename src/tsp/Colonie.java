@@ -18,7 +18,7 @@ public class Colonie {
 		return "Colonie [pheromones=" + Arrays.toString(pheromones) + ", fourmis=" + fourmis + ", meilleurChemin=" + meilleurChemin + ", meilleureDistance=" + meilleureDistance + "]";
 	}
 
-	public int[][] pheromones;
+	public double[][] pheromones;
 	public ArrayList<Fourmi> fourmis;
 	private ArrayList<Integer> meilleurChemin;
 	private int meilleureDistance = 0;
@@ -56,12 +56,12 @@ public class Colonie {
 			this.fourmis.add(fourmi);
 		} 
 		
-		this.pheromones = new int[instance.getNbCities()][];
+		this.pheromones = new double[instance.getNbCities()][];
 		for(int i = 0; i < instance.getNbCities(); i++) {
-			this.pheromones[i] = new int[i+1];
+			this.pheromones[i] = new double[i+1];
 			// Initialisation des phéromones
 			for(int j = 0; j < i+1; j++) {
-				this.pheromones[i][j] = 1;
+				this.pheromones[i][j] = 1.0;
 			}
 		}
 		
@@ -73,10 +73,7 @@ public class Colonie {
 			moyenneDistancesInstance[0] += this.instance.getDistances(randomIndex, randomIndex+1);
 			moyenneDistancesInstance[1]++;
 		}
-		moyenneDistancesInstance[0] /= moyenneDistancesInstance[1];
-		
-		System.err.println("Moyenne distances = "+moyenneDistancesInstance[0]);
-		
+
 		this.commencer();
 	}
 	
@@ -87,25 +84,29 @@ public class Colonie {
 		return this.solution;
 	}
 	public int getDistanceMoyenne() {
-		return this.moyenneDistancesInstance[0];
+		return this.moyenneDistancesInstance[0]/this.moyenneDistancesInstance[1];
 	}
-	public int[][] getPheromones() {
+	public void addDistanceMoyenne(int distance) {
+		this.moyenneDistancesInstance[0] += distance;
+		this.moyenneDistancesInstance[1]++;
+	}
+	public double[][] getPheromones() {
 		return this.pheromones;
 	}
-	public int getPheromones(int i, int j) throws Exception {
+	public double getPheromones(int i, int j) throws Exception {
 		if(i < 0 || j < 0 || i >= this.getInstance().getNbCities() || j >= this.getInstance().getNbCities())
 			throw new Exception("Vous demandez pheromones[i][j] avec des index qui dépassent les limites");
 
 		return (i>j) ? this.getPheromones()[i][j] : this.getPheromones()[j][i];
 	}
-	public void setPheromones(int i, int j, int value) throws Exception {
+	public void setPheromones(int i, int j, double d) throws Exception {
 		if(i < 0 || j < 0 || i >= this.getInstance().getNbCities() || j >= this.getInstance().getNbCities())
 			throw new Exception("Vous demandez pheromones[i][j] avec des index qui dépassent les limites");
 		
 		if(i>j)
-			this.pheromones[i][j] = value;
+			this.pheromones[i][j] = d;
 		else
-			this.pheromones[j][i] = value;
+			this.pheromones[j][i] = d;
 	}
 	
 	/**
@@ -120,6 +121,10 @@ public class Colonie {
 			throw new Exception("Vous demandez pheromones[i][j] avec des index qui dépassent les limites");
 		
 		this.setPheromones(i, j, this.getPheromones(i, j) + inc); 
+	}
+	
+	public void evapPheromones(int i, int j, double p) throws Exception {
+		this.setPheromones(i, j, this.getPheromones(i, j)*(1-p));
 	}
 	
 	public void setMeilleurChemin(ArrayList<Integer> chemin, int distance) throws Exception {
@@ -154,6 +159,7 @@ public class Colonie {
 		
 		Fourmi fourmiSolution = new Fourmi(this, 2);
 		fourmiSolution.parcourir();
+		System.err.println("Distance moyenne = "+this.getDistanceMoyenne());
 		System.err.println("Nombre de fourmis passées = "+this.nbFourmisPassees+"/"+this.nbFourmis);
 		System.err.println("Durée totale programme (ms) = "+this.getDureeMs());
 		System.err.println("Solution faisable = " + this.getSolution().isFeasible());
