@@ -90,8 +90,8 @@ public class Fourmi {
  * @throws Exception
  */
 	public HashMap<Integer,Double> probabilitesVillesPossibles(ArrayList<Integer> prochainesVillesPossibles) throws Exception {
-		double alpha = 0.3;
-		double beta = 0.7;
+		double alpha = 0.4;
+		double beta = 0.6;
 		
 		HashMap<Integer,Double> probabilites = new HashMap();
 		double probabilite;		
@@ -224,7 +224,7 @@ public class Fourmi {
 			for(int i = 0; i < n-1; i++) {
 				villeA = this.villesVisitees.get(i);
 				villeB = this.villesVisitees.get(i+1);
-				this.colonie.evapPheromones(villeA, villeB, 0.01);
+				this.colonie.evapPheromones(villeA, villeB, 0.001);
 				this.colonie.incPheromones(villeA, villeB, 1);
 			}
 		}
