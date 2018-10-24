@@ -28,6 +28,11 @@ public class Colonie {
 	private Solution solution;
 	private long startTime;
 	
+	public int nbFourmis = 0;
+	public int nbFourmisPassees = 0;
+	
+	private int[] moyenneDistancesInstance;
+	
 	/**
 	 * Créer une colonie de nbFourmis Fourmi Fourmis et créer la matrice triangulaire supérieure des phéromones 
 	 * @param nbFourmis
@@ -38,9 +43,11 @@ public class Colonie {
 		this.instance = instance;
 		this.solution = solution;
 		this.timeLimit = timeLimit;
+		this.nbFourmis = nbFourmis;
 
 		int nbVilles = instance.getNbCities();
 		
+		// Initialisation des fourmis
 		Fourmi fourmi;
 		this.fourmis = new ArrayList<Fourmi>();
 		
@@ -58,6 +65,18 @@ public class Colonie {
 			}
 		}
 		
+		// Initialisation distances moyennes
+		moyenneDistancesInstance = new int[2];
+		int randomIndex;
+		for(int i = 0; i < Math.ceil((double) 0.05*nbVilles); i++) {
+			randomIndex = (int) Math.random()*(nbVilles-2);
+			moyenneDistancesInstance[0] += this.instance.getDistances(randomIndex, randomIndex+1);
+			moyenneDistancesInstance[1]++;
+		}
+		moyenneDistancesInstance[0] /= moyenneDistancesInstance[1];
+		
+		System.err.println("Moyenne distances = "+moyenneDistancesInstance[0]);
+		
 		this.commencer();
 	}
 	
@@ -66,6 +85,9 @@ public class Colonie {
 	}
 	public Solution getSolution() {
 		return this.solution;
+	}
+	public int getDistanceMoyenne() {
+		return this.moyenneDistancesInstance[0];
 	}
 	public int[][] getPheromones() {
 		return this.pheromones;
@@ -120,7 +142,6 @@ public class Colonie {
 		ThreadFourmis thread;
 		
 		int depart = 0;
-		int nbFourmis = this.fourmis.size();
 			
 		for(int i = 1; i <= 4; i++) {
 			thread = new ThreadFourmis(this, depart);
@@ -133,6 +154,7 @@ public class Colonie {
 		
 		Fourmi fourmiSolution = new Fourmi(this, 2);
 		fourmiSolution.parcourir();
+		System.err.println("Nombre de fourmis passées = "+this.nbFourmisPassees+"/"+this.nbFourmis);
 		System.err.println("Durée totale programme (ms) = "+this.getDureeMs());
 		System.err.println("Solution faisable = " + this.getSolution().isFeasible());
 	}
@@ -144,7 +166,7 @@ public class Colonie {
 		return (System.currentTimeMillis() - this.startTime)/1000;
 	}
 	public boolean doitOnArreterLAlgorithme() {
-		return this.getDuree() > this.timeLimit-1;
+		return this.nbFourmis == this.nbFourmisPassees || this.getDuree() > this.timeLimit-1;
 	}
 	
 }

@@ -90,11 +90,14 @@ public class Fourmi {
  * @throws Exception
  */
 	public HashMap<Integer,Double> probabilitesVillesPossibles(ArrayList<Integer> prochainesVillesPossibles) throws Exception {
-		double alpha = 1.0;
-		double beta = 3.0;
+		double alpha = 1;
+		double beta = 1;
 		
 		HashMap<Integer,Double> probabilites = new HashMap();
-		double probabilite;		 
+		double probabilite;		
+		
+		HashMap<Integer,ArrayList<Double>> probabilitesAffichage = new HashMap();
+		ArrayList<Double> probabilitesAffichageList;
 		
 		/*
 		 * On calcule pour chaque ville la probabilité de la choisir comme prochaine
@@ -105,13 +108,27 @@ public class Fourmi {
 			probabilite = Math.pow(1.0/((double) this.colonie.getInstance().getDistances(this.villeActuelle, ville)), alpha)*Math.pow((double)this.colonie.getPheromones(this.villeActuelle, ville), beta);
 			sommeProbabilites += probabilite;
 			probabilites.put(ville, probabilite);
+			
+			probabilitesAffichageList = new ArrayList<Double>();
+			probabilitesAffichageList.add(((double) this.colonie.getInstance().getDistances(this.villeActuelle, ville)));
+			probabilitesAffichageList.add((double)this.colonie.getPheromones(this.villeActuelle, ville));
+			probabilitesAffichageList.add(probabilite);
+			probabilitesAffichage.put(ville, probabilitesAffichageList);
 		}
 		/* 
 		 * On ajuste les probabilités pour que la somme de toutes vaille 1
 		 */
 		for(int ville : prochainesVillesPossibles) {
 			probabilites.put(ville, probabilites.get(ville)/sommeProbabilites);
+			
+			probabilitesAffichageList = probabilitesAffichage.get(ville);
+			probabilite = probabilitesAffichageList.get(2);
+			probabilite = probabilite/sommeProbabilites;
+			probabilitesAffichageList.set(2, probabilite);
+			probabilitesAffichage.put(ville, probabilitesAffichageList);
 		}
+		
+		//System.err.println(probabilitesAffichage);
 		
 		return probabilites;
 	}
@@ -124,11 +141,21 @@ public class Fourmi {
 	
 	// Non optimal et bug pour ajuster
 	public int NextStep() throws Exception {
-		int i=0;
 		int villeSuivante=0;
-		ArrayList<Integer> prochainesVillesPossibles = prochainesVillesPossibles();
+		int nbProchainesVillesPossibles = 0;
+		int critereDistance = 1000;
 		
-		if(prochainesVillesPossibles.size() >= 1) {
+		int nbCritere = 1;
+		ArrayList<Integer> prochainesVillesPossibles;
+		do {
+			prochainesVillesPossibles = prochainesVillesPossibles(nbCritere*critereDistance);
+			nbProchainesVillesPossibles = prochainesVillesPossibles.size();
+			System.err.println(nbProchainesVillesPossibles);
+			nbCritere++;
+		} while(nbProchainesVillesPossibles < Math.ceil((double) 0.05*this.colonie.getInstance().getNbCities()) && nbProchainesVillesPossibles < this.villesRestantes.size());
+		System.err.println();
+		
+		if(nbProchainesVillesPossibles >= 1) {
 			if(this.typeFourmi == 2) {
 				int maxPheromone = 0;
 				int pheromone;
@@ -141,6 +168,7 @@ public class Fourmi {
 				}
 			}
 			else if(this.typeFourmi == 1) {
+				int i=0;
 				HashMap<Integer,Double> proba = this.probabilitesVillesPossibles(prochainesVillesPossibles); 
 				
 				while (i==0) {

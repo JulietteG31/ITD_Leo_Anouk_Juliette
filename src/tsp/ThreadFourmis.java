@@ -9,7 +9,7 @@ public class ThreadFourmis extends Thread {
 	ThreadFourmis(Colonie colonie, int departFourmis) {
 		this.colonie = colonie;
 		this.departFourmis = departFourmis;
-		this.nbFourmis = this.colonie.fourmis.size();
+		this.nbFourmis = this.colonie.nbFourmis;
 	}
 	
     public void run(){
@@ -18,6 +18,7 @@ public class ThreadFourmis extends Thread {
 				break;
 			
 			try {
+				this.colonie.nbFourmisPassees++;
 				this.colonie.fourmis.get(j).parcourir();
 			} catch (Exception e) {
 				e.printStackTrace();
