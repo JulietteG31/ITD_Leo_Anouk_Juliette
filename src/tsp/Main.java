@@ -137,7 +137,7 @@ public class Main {
 			int e = 0;
 			if (!feasible) {
 				e = 1;
-				System.err.println(tsp.getSolution().getError());
+				//System.err.println(tsp.getSolution().getError());
 			} else {
 				if (t > (max_time + 1) * 1000) {
 					e = 2;
@@ -154,12 +154,12 @@ public class Main {
 					+ tsp.getSolution().getObjectiveValue() + ";" + t + ";" + e);
 
 			// If verbose, print the solution
-			if (verbose) {
+			/*if (verbose) {
 				data.print(System.err);
 				tsp.getSolution().print(System.err);
 				if (e == 1)
 					System.err.println("Error: There is an error in the solution: " + tsp.getSolution().getError());
-			}
+			}*/
 
 
 		} catch (IOException e) {
