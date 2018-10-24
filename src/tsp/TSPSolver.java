@@ -1,6 +1,10 @@
 package tsp;
 
 /**
+<<<<<<< HEAD
+=======
+ * Salut les noobs Hey
+>>>>>>> branch 'Anouk' of https://github.com/JulietteG31/ITD_Leo_Anouk_Juliette.git
  * This class is the place where you should enter your code and from which you can create your own objects.
  * 
  * The method you must implement is solve(). This method is called by the programmer after loading the data.
