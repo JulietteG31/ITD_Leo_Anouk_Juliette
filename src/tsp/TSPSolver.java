@@ -70,19 +70,9 @@ public class TSPSolver {
 	 * 
 	 * @throws Exception may return some error, in particular if some vertices index are wrong.
 	 */
-	public void solve() throws Exception
-	{
-		m_solution.print(System.err);
-		
-		// Example of a time loop
-		long startTime = System.currentTimeMillis();
-		long spentTime = 0;
-		do
-		{
-			// TODO
-			// Code a loop base on time here
-			spentTime = System.currentTimeMillis() - startTime;
-		}while(spentTime < (m_timeLimit * 1000 - 100) );
+	public void solve() throws Exception{
+		PlusProcheVoisin plusProcheVoisin = new PlusProcheVoisin(this.m_instance, this.m_solution);
+		this.setSolution(plusProcheVoisin.solution);
 		
 	}
 
