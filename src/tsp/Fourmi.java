@@ -10,12 +10,19 @@ import java.util.List;
  */
 public class Fourmi {
 	
+	/**
+	 * Methode utilisee pour des tests
+	 */
 	@Override
 	public String toString() {
 		return "Fourmi [villesVisitees=" + villesVisitees + ", villesRestantes=" + villesRestantes + ", typeFourmi="
 				+ typeFourmi + ", villeActuelle=" + villeActuelle + ", etat=" + etat + ", distance=" + distance
 				+ ", colonie=" + colonie + "]";
 	}
+	
+	// -----------------------------
+	// ----- ATTRIBUTS -------------
+	// -----------------------------
 
 	private ArrayList<Integer> villesVisitees;
 	private ArrayList<Integer> villesRestantes;
@@ -23,34 +30,34 @@ public class Fourmi {
 	private int villeActuelle;
 	private int etat; // 0:au départ 1:aller 2:retour
 	private int distance; // somme de toutes les distances parcourues par la fourmi
-	
-	private int nbTours;
-	
 	private Colonie colonie;
 	
 	
-	public Fourmi(ArrayList<Integer> villesVisitees, ArrayList<Integer> villesRestantes, int typeFourmi, int villeActuelle, int etat,
-			int distance, Colonie colonie) throws Exception {
-		this.villesVisitees = villesVisitees;
-		this.villesRestantes = villesRestantes;
-		this.typeFourmi = typeFourmi;
-		this.villeActuelle = villeActuelle;
-		this.etat = etat; 
-		this.distance = distance; 
-		this.colonie = colonie;
+	// -----------------------------
+	// ----- CONSTRUCTOR -----------
+	// -----------------------------
 
-		this.nbTours = 0;
-		
-		this.initialiser();
-	}
-	
 	/**
-	 * Description :  Constructeur par chaînage. Créer une fourmi au point de départ
+	 * Constructeur
 	 * @param colonie
-	 * @throws Exception 
+	 * @param typeFourmi
+	 * @throws Exception
 	 */
+	
 	public Fourmi(Colonie colonie, int typeFourmi) throws Exception {
-		this(new ArrayList<Integer>(),new ArrayList<Integer>(),typeFourmi,0,0,0, colonie);
+		this.colonie=colonie;
+		this.typeFourmi=typeFourmi;
+		this.villeActuelle = 0;
+		this.etat = 0;
+		this.distance = 0;
+		this.villesVisitees = new ArrayList<Integer>();
+		this.villesRestantes = new ArrayList<Integer>();
+		
+		this.villesVisitees.add(0);
+		for(int i=1;i<this.colonie.getInstance().getNbCities();i++) {
+			this.villesRestantes.add(i);
+		}
+		
 	}
 	
 	/**
@@ -59,11 +66,16 @@ public class Fourmi {
 	 * @throws Exception 
 	 */
 	public Fourmi(Colonie colonie) throws Exception {
-		this(new ArrayList<Integer>(),new ArrayList<Integer>(),1,0,0,0, colonie);
+		this(colonie, 1);
 	}
 	
+	// -----------------------------
+	// ----- METHODS ---------------
+	// -----------------------------
+
+	
 	/**
-	 * Description : villes atteignables depuis la position actuelle de la fourmi. Critère arbitraire
+	 * Description : villes atteignables depuis la position actuelle de la fourmi. 
 	 * @param rayonRecherche (-1 pour tout accepter)
 	 * @return liste des numéros des villes atteignables
 	 */
@@ -84,11 +96,11 @@ public class Fourmi {
 	}
 	
 
-/**
- * Description : On associe chaque ville à sa probabilité d'être choisi à la prochaine étape
- * @return Hashmap avec en clé le numéro de la ville et en valeur la probabilité. 
- * @throws Exception
- */
+	/**
+	 * Description : On associe chaque ville à sa probabilité d'être choisie à la prochaine étape
+	 * @return Hashmap avec en clé le numéro de la ville et en valeur la probabilité. 
+	 * @throws Exception
+	 */
 	public HashMap<Integer,Double> probabilitesVillesPossibles(ArrayList<Integer> prochainesVillesPossibles) throws Exception {
 		double alpha = 0.5;
 		double beta = 0.5;
@@ -100,8 +112,7 @@ public class Fourmi {
 		ArrayList<Double> probabilitesAffichageList;
 		
 		/*
-		 * On calcule pour chaque ville la probabilité de la choisir comme prochaine
-		 * destination
+		 * On calcule pour chaque ville la probabilité qu'elle soit choisie comme prochaine destination
 		 */
 		double sommeProbabilites = 0.0;
 		double distance;
@@ -140,13 +151,12 @@ public class Fourmi {
 		return probabilites;
 	}
 	
-/**
- * Description : Utilisation des probabilités calculées pour choisir la prochaine destination
- * @return le numéro de la prochaine ville à laquelle la fourmi va se rendre.
- * @throws Exception
- */
+	/**
+	 * Description : Utilisation des probabilités calculées pour choisir la prochaine destination
+	 * @return le numéro de la prochaine ville à laquelle la fourmi va se rendre.
+	 * @throws Exception
+	 */
 	
-	// Non optimal et bug pour ajuster
 	public int NextStep() throws Exception {
 		int villeSuivante=0;
 		int nbProchainesVillesPossibles = 0;
@@ -247,24 +257,7 @@ public class Fourmi {
 		}
 	}
 	
-	/**
-	 * Initialise une fourmi (ou la réinitialise)
-	 * @throws Exception 
-	 */
-	public void initialiser() throws Exception {		
-		this.villeActuelle = 0;
-		this.etat = 0;
-		this.distance = 0;
-		this.villesVisitees = new ArrayList<Integer>();
-		this.villesRestantes = new ArrayList<Integer>();
-		
-		this.villesVisitees.add(0);
-		for(int i=1;i<this.colonie.getInstance().getNbCities();i++) {
-			this.villesRestantes.add(i);
-		}
-	
-		this.nbTours++;
-	} 
+
 	
 	public void mettreAJourMeilleurChemin() throws Exception {
 		if(this.villesRestantes.size()==0)
@@ -285,10 +278,8 @@ public class Fourmi {
 			}
 			else { 
 				int villeSuivante=NextStep();
-				// Si la fourmi est bloquée dans un cul de sac
-				if(villeSuivante == -1)
-					this.initialiser();
-				else
+				// Si la fourmi n'est pas bloquée dans un cul de sac
+				if(villeSuivante != -1)
 					this.avancer(villeSuivante);
 				this.parcourir();
 			} 
