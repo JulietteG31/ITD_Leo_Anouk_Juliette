@@ -68,11 +68,8 @@ public class TSPSolver {
 	 */
 	public void solve() throws Exception
 	{
-		//Colonie colonie = new Colonie(750, this.m_instance, this.m_solution, this.m_timeLimit);
-		//this.setSolution(colonie.getSolution());
-		
-		PlusProchesVoisins plusProchesVoisins = new PlusProchesVoisins(this.m_instance, this.m_solution);
-		this.setSolution(plusProchesVoisins.m_solution);
+		Colonie colonie = new Colonie(4100, this.m_instance, this.m_solution, 60);
+		this.setSolution(colonie.getSolution());
 	}
 
 	// -----------------------------

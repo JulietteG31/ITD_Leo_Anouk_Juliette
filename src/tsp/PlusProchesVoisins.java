@@ -13,7 +13,9 @@ public class PlusProchesVoisins {
 
 	ArrayList<Integer> villesRestantes;
 	ArrayList<Integer> villesVisitees;
+	int villeDepart;
 	int villeActuelle;
+	int distance = 0;
 	Instance m_instance;
 	Solution m_solution;
 	
@@ -27,18 +29,19 @@ public class PlusProchesVoisins {
 	 * @param solution
 	 * @throws Exception
 	 */
-	public PlusProchesVoisins(Instance instance, Solution solution) throws Exception {
+	public PlusProchesVoisins(Instance instance, Solution solution, int villeDepart) throws Exception {
 		m_instance = instance;
 		m_solution = solution;		
 		
-		villeActuelle = 0;
+		villeDepart = villeDepart;
+		villeActuelle = villeDepart;
 		villesRestantes = new ArrayList<Integer>();
 		villesVisitees = new ArrayList<Integer>();
 		
 		for(int i = 1; i < this.m_instance.getNbCities(); i++) {
 			villesRestantes.add(i);
 		}
-		villesVisitees.add(0);
+		villesVisitees.add(villeDepart);
 		
 		this.avancer();
 	}
@@ -77,16 +80,17 @@ public class PlusProchesVoisins {
 			int prochaineVille = this.prochaineVille();
 			this.villesRestantes.remove(this.villesRestantes.indexOf(prochaineVille));
 			this.villesVisitees.add(prochaineVille);
+			this.distance += this.m_instance.getDistances(villeActuelle, prochaineVille);
 			this.villeActuelle = prochaineVille;
 			this.avancer();
 		}
 		else {
-			this.villesVisitees.add(0);
+			this.villesVisitees.add(villeDepart);
 			
-			
+			/*
 			for(int i = 0; i < this.villesVisitees.size(); i++) {
 				this.m_solution.setCityPosition(this.villesVisitees.get(i), i);
-			}
+			}*/
 		}
 	} 
 

@@ -1,6 +1,7 @@
 package tsp;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -31,7 +32,9 @@ public class Fourmi {
 	private int etat; // 0:au départ 1:aller 2:retour
 	private int distance; // somme de toutes les distances parcourues par la fourmi
 	private Colonie colonie;
+	private int villeDepart;
 	
+	private ArrayList<double[]> arcsAjoutes;
 	
 	// -----------------------------
 	// ----- CONSTRUCTOR -----------
@@ -41,23 +44,43 @@ public class Fourmi {
 	 * Constructeur
 	 * @param colonie
 	 * @param typeFourmi
+	 * @param villeDepart
+	 * @param commencer
 	 * @throws Exception
 	 */
 	
-	public Fourmi(Colonie colonie, int typeFourmi) throws Exception {
+	public Fourmi(Colonie colonie, int typeFourmi, int villeDepart, boolean commencer) throws Exception {
 		this.colonie=colonie;
 		this.typeFourmi=typeFourmi;
-		this.villeActuelle = 0;
+		
+		initialiser(villeDepart);
+		
+		if(commencer && !this.colonie.doitOnArreterLAlgorithme())
+			this.parcourir();
+	}
+	public Fourmi(Colonie colonie, int typeFourmi, int villeDepart) throws Exception {
+		this(colonie, typeFourmi, villeDepart, false);
+	}
+	
+	public void initialiser(int villeDepart) throws Exception {
+		//this.colonie.nbFourmisPassees++;
+		
+		this.villeDepart = villeDepart;
 		this.etat = 0;
 		this.distance = 0;
 		this.villesVisitees = new ArrayList<Integer>();
 		this.villesRestantes = new ArrayList<Integer>();
+		this.villeActuelle = villeDepart;
+		this.arcsAjoutes = new ArrayList<double[]>();
 		
-		this.villesVisitees.add(0);
+		this.villesVisitees.add(villeDepart);
 		for(int i=1;i<this.colonie.getInstance().getNbCities();i++) {
 			this.villesRestantes.add(i);
 		}
-		
+	}
+	
+	public void reinitialiser(int villeDepart) throws Exception {
+		Fourmi nextStep = new Fourmi(this.colonie, this.typeFourmi, villeDepart, true);
 	}
 	
 	/**
@@ -66,7 +89,7 @@ public class Fourmi {
 	 * @throws Exception 
 	 */
 	public Fourmi(Colonie colonie) throws Exception {
-		this(colonie, 1);
+		this(colonie, 1, 0);
 	}
 	
 	// -----------------------------
@@ -102,13 +125,14 @@ public class Fourmi {
 	 * @throws Exception
 	 */
 	public HashMap<Integer,Double> probabilitesVillesPossibles(ArrayList<Integer> prochainesVillesPossibles) throws Exception {
-		double alpha = 0.5;
-		double beta = 0.5;
+		double alpha = 1;
+		double beta = 5;
 		
 		HashMap<Integer,Double> probabilites = new HashMap();
 		double probabilite;		
 		
 		HashMap<Integer,ArrayList<Double>> probabilitesAffichage = new HashMap();
+		// Pour débuguer
 		ArrayList<Double> probabilitesAffichageList;
 		
 		/*
@@ -160,19 +184,16 @@ public class Fourmi {
 	public int NextStep() throws Exception {
 		int villeSuivante=0;
 		int nbProchainesVillesPossibles = 0;
-		int critereDistance = this.colonie.getDistanceMoyenne()/2;
+		int critereDistance = this.colonie.getDistanceMoyenne()/4;
 		//critereDistance = -1;
-		//System.err.println(critereDistance);
 		
 		int nbCritere = 1;
 		ArrayList<Integer> prochainesVillesPossibles;
 		do {
 			prochainesVillesPossibles = prochainesVillesPossibles(nbCritere*critereDistance);
 			nbProchainesVillesPossibles = prochainesVillesPossibles.size();
-			//System.err.println(nbProchainesVillesPossibles);
 			nbCritere++;
 		} while(nbProchainesVillesPossibles < Math.ceil((double) 0.01*this.colonie.getInstance().getNbCities()) && nbProchainesVillesPossibles < this.villesRestantes.size());
-		//System.err.println();
 		
 		if(nbProchainesVillesPossibles >= 1) {
 			if(this.typeFourmi == 2) {
@@ -188,22 +209,33 @@ public class Fourmi {
 			}
 			else if(this.typeFourmi == 1) {
 				int i=0;
+				//int villeSupprimee;
 				HashMap<Integer,Double> proba = this.probabilitesVillesPossibles(prochainesVillesPossibles); 
+				HashMap<Integer,Double> proba2 = proba;
+				double random = Math.random();
+				double probaTest = 0.0;
 				
 				while (i==0) {
 					//System.err.println(prochainesVillesPossibles);
 					//System.err.println(prochainesVillesPossibles.size());
-					//System.err.println(proba);
-					if(prochainesVillesPossibles.size() == 1 || Math.random()<= proba.get(prochainesVillesPossibles.get(i))) {
-						villeSuivante=prochainesVillesPossibles.get(i);
+					//System.err.println(proba)
+					probaTest += proba.get(prochainesVillesPossibles.get(0));
+					if(prochainesVillesPossibles.size() == 1 || random <= probaTest) {
+						villeSuivante=prochainesVillesPossibles.get(0);
+						/*if(this.colonie.getInstance().getDistances(villeActuelle, villeSuivante) > 3000) {
+							System.err.println(this.colonie.getInstance().getDistances(villeActuelle, villeSuivante));
+							System.err.println(prochainesVillesPossibles);
+							System.err.println(proba2);
+						}*/
 						i=1;
 						// i=1 donc on arrête la boucle
 					}
 					else {
+						//villeSupprimee = prochainesVillesPossibles.get(0);
 						prochainesVillesPossibles.remove(0);
-						for (int villesuiv: prochainesVillesPossibles) {
-							proba.put(villesuiv, proba.get(villesuiv)/(1.0-proba.get(prochainesVillesPossibles.get(i))));
-						}
+						/*for (int villesuiv: prochainesVillesPossibles) {
+							proba.put(villesuiv, proba.get(villesuiv)*(1.0-proba.get(villeSupprimee)));
+						}*/
 					}
 				}
 			}
@@ -235,7 +267,7 @@ public class Fourmi {
 				villeA = this.villesVisitees.get(i);
 				villeB = this.villesVisitees.get(i+1);
 				//this.colonie.evapPheromones(villeA, villeB, 0.001);
-				this.colonie.incPheromones(villeA, villeB, 1);
+				this.colonie.incPheromones(villeA, villeB, (double)this.colonie.getDistanceMoyenne()/this.distance);
 			}
 		}
 	}
@@ -247,7 +279,7 @@ public class Fourmi {
 	public boolean arriveeADestination() throws Exception {
 		if(this.villesRestantes.size()==0) {
 			// On ferme la boucle du trajet
-			this.avancer(0);
+			this.avancer(this.villeDepart);
 			
 			this.etat=2;
 			return true;
@@ -257,11 +289,10 @@ public class Fourmi {
 		}
 	}
 	
-
-	
 	public void mettreAJourMeilleurChemin() throws Exception {
-		if(this.villesRestantes.size()==0)
+		if(this.villesRestantes.size()==0) {
 			this.colonie.setMeilleurChemin(this.villesVisitees, this.distance);
+		}
 	}
 	
 	/**
@@ -271,17 +302,22 @@ public class Fourmi {
 	public void parcourir() throws Exception {
 		if(this.typeFourmi == 2 || (this.typeFourmi == 1 && !this.colonie.doitOnArreterLAlgorithme())) {
 			if(this.arriveeADestination()) {			
-				if(this.typeFourmi == 1)
+				if(this.typeFourmi == 1) {
 					this.deposerPheromones();
+					//this.reinitialiser((int)Math.random()*this.colonie.getInstance().getNbCities());
+				}
 				if(this.typeFourmi == 2) 
 					this.mettreAJourMeilleurChemin();
 			}
 			else { 
 				int villeSuivante=NextStep();
-				// Si la fourmi n'est pas bloquée dans un cul de sac
-				if(villeSuivante != -1)
+				// Si la fourmi est bloquée dans un cul de sac
+				if(villeSuivante == -1)
+					this.reinitialiser((int)Math.random()*this.colonie.getInstance().getNbCities());
+				else {	
 					this.avancer(villeSuivante);
-				this.parcourir();
+					this.parcourir();
+				}
 			} 
 		}
 	}
@@ -291,9 +327,121 @@ public class Fourmi {
 	 * @param villeSuivante
 	 * @throws Exception
 	 */
-	public void avancer(int villeSuivante) throws Exception {		
+	public void avancer(int villeSuivante) throws Exception {	
 		distance+=this.colonie.getInstance().getDistances(villeActuelle, villeSuivante);
-		villesVisitees.add(villeSuivante);
+		if(this.typeFourmi == 1) 
+			villesVisitees.add(villeSuivante);
+		else
+			villesVisitees.add(villeSuivante);
+		
+		
+		/**
+		 * Tentative détection des croisements 
+		 */
+		
+		/*if(this.typeFourmi == 2) {
+			double[] pointA = {this.colonie.getInstance().getX(villeActuelle), this.colonie.getInstance().getY(villeActuelle),0, villeActuelle};
+			double[] pointB = {this.colonie.getInstance().getX(villeSuivante), this.colonie.getInstance().getY(villeSuivante),0, villeSuivante};
+			
+			boolean pointAAuBonEndroit = false, pointBAuBonEndroit = false;
+			int i = 0;
+			int indexA = 0, indexB = 0;
+			if(pointB[0] <= pointA[0]) {
+				double[] point = pointA;
+				pointA = pointB;
+				pointB = point;
+			}
+			while(!pointAAuBonEndroit && i < this.arcsAjoutes.size()) {
+				if(pointA[0] < this.arcsAjoutes.get(i)[0]) {
+					this.arcsAjoutes.add(i, pointA);
+					pointAAuBonEndroit = true;
+					indexA = i;
+				}
+				i++;
+			}
+			if(!pointAAuBonEndroit && i == this.arcsAjoutes.size()) {
+				this.arcsAjoutes.add(pointA);
+				indexA = i;
+			}
+			
+			while(!pointBAuBonEndroit && i < this.arcsAjoutes.size()) {
+				if(pointB[0] < this.arcsAjoutes.get(i)[0]) {
+					this.arcsAjoutes.add(i, pointB);
+					pointBAuBonEndroit = true;
+					indexB = i;
+				}
+				i++;
+			}
+			if(!pointBAuBonEndroit && i == this.arcsAjoutes.size()) {
+				this.arcsAjoutes.add(pointB);
+				indexB = i;
+			}
+			
+			pointA[2] = indexB;
+			pointB[2] = indexA;
+			this.arcsAjoutes.set(indexA, pointA);
+			this.arcsAjoutes.set(indexB, pointB);
+			
+			int ecartIndexA = 1, ecartIndexB = 1;
+			boolean croisementTrouve = false;
+			double[] arcAGaucheDeA;
+			double[] arcADroiteDeB = null;
+			double[] pointArcAGaucheDeA = null;
+			double[] pointArcADroiteDeB;
+			int villeC = 0, villeD = 0;
+			while(!croisementTrouve && (indexA-ecartIndexA >= 0 || indexB+ecartIndexB < this.arcsAjoutes.size())) {
+				if(indexA-ecartIndexA >= 0) {
+					arcAGaucheDeA = this.arcsAjoutes.get(indexA-ecartIndexA);
+					if(arcAGaucheDeA[2] > indexA) {
+						pointArcAGaucheDeA = this.arcsAjoutes.get((int)arcAGaucheDeA[2]);
+						if( Math.sqrt(Math.pow(pointArcAGaucheDeA[0]-arcAGaucheDeA[0], 2)+Math.pow(pointArcAGaucheDeA[1]-arcAGaucheDeA[1], 2))+Math.sqrt(Math.pow(pointA[0]-pointB[0], 2)+Math.pow(pointA[1]-pointB[1], 2)) == Math.sqrt(Math.pow(pointA[0]-pointArcAGaucheDeA[0], 2)+Math.pow(pointA[1]-pointArcAGaucheDeA[1], 2))+Math.sqrt(Math.pow(pointArcAGaucheDeA[0]-pointB[0], 2)+Math.pow(pointArcAGaucheDeA[1]-pointB[1], 2))+Math.sqrt(Math.pow(arcAGaucheDeA[0]-pointB[0], 2)+Math.pow(arcAGaucheDeA[1]-pointB[1], 2))+Math.sqrt(Math.pow(arcAGaucheDeA[0]-pointA[0], 2)+Math.pow(arcAGaucheDeA[1]-pointA[1], 2)) ) {
+							croisementTrouve = true;
+							villeC = (int) arcAGaucheDeA[3];
+							villeD = (int) pointArcAGaucheDeA[3];
+						}
+					}
+					ecartIndexA++;
+				}
+				
+				if(!croisementTrouve && indexB+ecartIndexB < this.arcsAjoutes.size()) {
+					arcADroiteDeB = this.arcsAjoutes.get(indexB+ecartIndexB);
+					if(arcADroiteDeB[2] < indexB) {
+						pointArcADroiteDeB = this.arcsAjoutes.get((int)arcADroiteDeB[2]);
+						if( Math.sqrt(Math.pow(pointArcADroiteDeB[0]-arcADroiteDeB[0], 2)+Math.pow(pointArcADroiteDeB[1]-arcADroiteDeB[1], 2))+Math.sqrt(Math.pow(pointA[0]-pointB[0], 2)+Math.pow(pointA[1]-pointB[1], 2)) == Math.sqrt(Math.pow(pointA[0]-pointArcADroiteDeB[0], 2)+Math.pow(pointA[1]-pointArcADroiteDeB[1], 2))+Math.sqrt(Math.pow(pointArcADroiteDeB[0]-pointB[0], 2)+Math.pow(pointArcADroiteDeB[1]-pointB[1], 2))+Math.sqrt(Math.pow(arcADroiteDeB[0]-pointB[0], 2)+Math.pow(arcADroiteDeB[1]-pointB[1], 2))+Math.sqrt(Math.pow(arcADroiteDeB[0]-pointA[0], 2)+Math.pow(arcADroiteDeB[1]-pointA[1], 2)) ) {
+							croisementTrouve = true;
+							villeC = (int) arcADroiteDeB[3];
+							villeD = (int) pointArcADroiteDeB[3];
+						}
+					}
+					ecartIndexB++;
+				}
+			}
+			
+			if(croisementTrouve) {
+				int indexCDansCheminActuel = this.villesVisitees.indexOf(villeC);
+				int indexDDansCheminActuel = this.villesVisitees.indexOf(villeD);
+				int index = 0;
+				if(indexDDansCheminActuel > indexCDansCheminActuel) {
+					index = indexCDansCheminActuel;
+					indexCDansCheminActuel = indexDDansCheminActuel;
+					indexDDansCheminActuel = index;
+				}
+				
+				if(indexCDansCheminActuel != -1 && indexDDansCheminActuel != -1 && indexCDansCheminActuel-indexDDansCheminActuel > 1) {
+					ArrayList<Integer> cheminAInverserEntreCetD = new ArrayList<Integer>(this.villesVisitees.subList(indexCDansCheminActuel+1, indexDDansCheminActuel));
+					Collections.reverse(cheminAInverserEntreCetD);
+					System.err.println("inversion");
+					this.villesVisitees.add(indexCDansCheminActuel+1, villeActuelle);
+					for(i = 0; i < cheminAInverserEntreCetD.size(); i++) {
+						this.villesVisitees.set(indexCDansCheminActuel+i+2, cheminAInverserEntreCetD.get(i));
+					}
+					this.villesVisitees.add(villeSuivante);
+				}
+			}
+			else
+				this.villesVisitees.add(villeSuivante);
+		}*/
+			
 		villeActuelle=villeSuivante;
 		if(villesRestantes.size() > 0)
 			villesRestantes.remove(villesRestantes.indexOf(villeActuelle));
