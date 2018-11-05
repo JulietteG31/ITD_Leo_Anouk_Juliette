@@ -1,0 +1,66 @@
+package tsp;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import tsp.neighborhood.ANeighborhood;
+
+public class PlusProchesVoisins {
+
+	ArrayList<Integer> villesRestantes;
+	ArrayList<Integer> villesVisitees;
+	int villeActuelle;
+	Instance m_instance;
+	Solution m_solution;
+	
+	public PlusProchesVoisins(Instance instance, Solution solution) throws Exception {
+		m_instance = instance;
+		m_solution = solution;		
+		
+		villeActuelle = 0;
+		villesRestantes = new ArrayList<Integer>();
+		villesVisitees = new ArrayList<Integer>();
+		
+		for(int i = 1; i < this.m_instance.getNbCities(); i++) {
+			villesRestantes.add(i);
+		}
+		villesVisitees.add(0);
+		
+		this.avancer();
+	}
+
+	public int prochaineVille() throws Exception {
+		int villeChoisie = -1;
+		double distanceMin = -1;
+		double distance;
+		
+		for(int ville : this.villesRestantes) {
+			distance = this.m_instance.getDistances(ville, this.villeActuelle);
+			if(distanceMin == -1 || distance < distanceMin) {
+				villeChoisie = ville;
+				distanceMin = distance;
+			}
+		}
+		
+		return villeChoisie;
+	}
+	
+	public void avancer() throws Exception {
+		if(villesRestantes.size() > 0) {
+			int prochaineVille = this.prochaineVille();
+			this.villesRestantes.remove(this.villesRestantes.indexOf(prochaineVille));
+			this.villesVisitees.add(prochaineVille);
+			this.villeActuelle = prochaineVille;
+			this.avancer();
+		}
+		else {
+			this.villesVisitees.add(0);
+			
+			
+			for(int i = 0; i < this.villesVisitees.size(); i++) {
+				this.m_solution.setCityPosition(this.villesVisitees.get(i), i);
+			}
+		}
+	} 
+
+}
