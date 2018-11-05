@@ -6,6 +6,10 @@ import java.util.List;
 import tsp.neighborhood.ANeighborhood;
 
 public class PlusProchesVoisins {
+	
+	// -----------------------------
+	// ----- ATTRIBUTS -------------
+	// -----------------------------
 
 	ArrayList<Integer> villesRestantes;
 	ArrayList<Integer> villesVisitees;
@@ -13,6 +17,16 @@ public class PlusProchesVoisins {
 	Instance m_instance;
 	Solution m_solution;
 	
+	// -----------------------------
+	// ----- CONSTRUCTOR -----------
+	// -----------------------------
+	
+	/**
+	 * Constructor
+	 * @param instance l'instance du probleme
+	 * @param solution
+	 * @throws Exception
+	 */
 	public PlusProchesVoisins(Instance instance, Solution solution) throws Exception {
 		m_instance = instance;
 		m_solution = solution;		
@@ -28,7 +42,16 @@ public class PlusProchesVoisins {
 		
 		this.avancer();
 	}
+	
+	// -----------------------------
+	// ----- METHODS ---------------
+	// -----------------------------
 
+	/**
+	 * Donne la prochaine ville sur laquelle va se rendre le voyageur
+	 * @return villeChoisie, le numero de la prochaine ville
+	 * @throws Exception
+	 */
 	public int prochaineVille() throws Exception {
 		int villeChoisie = -1;
 		double distanceMin = -1;
@@ -45,6 +68,10 @@ public class PlusProchesVoisins {
 		return villeChoisie;
 	}
 	
+	/**
+	 * Lancement de l'algorithme du plus proche voisin
+	 * @throws Exception
+	 */
 	public void avancer() throws Exception {
 		if(villesRestantes.size() > 0) {
 			int prochaineVille = this.prochaineVille();
